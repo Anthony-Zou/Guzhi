@@ -62,6 +62,7 @@
   .fade-in.delay-1 { transition-delay: 0.35s; }
   .fade-in.delay-2 { transition-delay: 0.6s; }
   .fade-in.delay-3 { transition-delay: 0.85s; }
+  .fade-in.delay-4 { transition-delay: 1.1s; }
 
   .scroll-hint {
     position: absolute;
@@ -102,14 +103,28 @@
     line-height: 1.7;
     max-width: 640px;
     font-weight: 300;
-    margin-bottom: 24px;
+    margin-bottom: 28px;
+  }
+  /* 新加:use case 一行,落地句,告诉读者"这玩意儿是干嘛的" */
+  .usecase {
+    font-size: clamp(15px, 1.7vw, 17px);
+    color: var(--ink);
+    line-height: 1.75;
+    max-width: 620px;
+    margin-bottom: 22px;
+    letter-spacing: 0.02em;
+  }
+  .usecase em {
+    color: var(--accent);
+    font-style: normal;
   }
   .tagline {
-    font-size: clamp(15px, 1.7vw, 18px);
+    font-size: clamp(13px, 1.5vw, 15px);
     color: var(--muted);
     font-weight: 300;
     font-style: italic;
     letter-spacing: 0.04em;
+    max-width: 580px;
   }
 
   /* ── Story screen（算法 + 小镇都用同套）── */
@@ -370,6 +385,86 @@
     transition: height 0.1s linear;
   }
 
+  /* FAQ 屏 ——  故知不是 / 故知是 */
+  .faq-screen .bridge { text-align: center; margin-bottom: 14px; }
+  .faq-screen .heading {
+    text-align: center;
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.35;
+    margin-bottom: 56px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+  .faq-screen .heading em {
+    color: var(--accent);
+    font-style: normal;
+  }
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  @media (max-width: 720px) {
+    .faq-grid { grid-template-columns: 1fr; gap: 18px; }
+  }
+  .faq-col {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 28px 26px 22px;
+    background: rgba(31, 27, 24, 0.5);
+  }
+  .faq-col.is-not {
+    /* 灰一点,衬托右边 */
+    opacity: 0.78;
+  }
+  .faq-col.is-yes {
+    border-color: rgba(224, 160, 90, 0.55);
+    background: rgba(50, 42, 36, 0.6);
+  }
+  .faq-col .label {
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+  .faq-col.is-yes .label { color: var(--accent); }
+  .faq-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .faq-col li {
+    color: var(--ink-soft, #b8b0a3);
+    font-size: 15px;
+    line-height: 1.85;
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+  .faq-col li:last-child { border-bottom: none; }
+  .faq-col.is-yes li { color: var(--ink); }
+  .faq-col li strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .faq-col.is-yes li em {
+    color: var(--accent);
+    font-style: normal;
+  }
+  .faq-footer {
+    text-align: center;
+    margin: 48px auto 0;
+    max-width: 620px;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.85;
+  }
+  .faq-footer em {
+    color: var(--accent);
+    font-style: normal;
+  }
+
   @media (max-width: 600px) {
     html { scroll-snap-type: y proximity; }
     .screen { padding: 60px 22px; }
@@ -421,13 +516,14 @@
   <div class="screen-inner">
     <div class="brand fade-in" data-i18n="hero.brand">故 知 · G U Z H I</div>
     <h1 class="fade-in delay-1" data-i18n-html="hero.title">
-      在虚拟里<span class="accent">相识</span>，<br>
-      在现实里<span class="accent">相认</span>。
+      在虚拟里<span class="accent">相知</span>，<br>
+      在现实里<span class="accent">相识</span>。
     </h1>
     <p class="lede fade-in delay-2" data-i18n="hero.lede">他乡遇故知 —— 换一种发生方式。</p>
-    <p class="tagline fade-in delay-3" data-i18n="hero.tagline">
-      不是配对，是先认识，再相认。
+    <p class="usecase fade-in delay-3" data-i18n-html="hero.usecase">
+      写下你最近一直在想的事 —— 故知会找到<em>也在想同一件事的人</em>。
     </p>
+
   </div>
   <div class="scroll-hint" data-i18n="hero.scroll">↓ 往 下 看</div>
 </section>
@@ -468,6 +564,44 @@
         <div class="arrow" data-i18n="cta.arrow">进 入 →</div>
       </a>
     </div>
+  </div>
+</section>
+
+<!-- ═══ 3.5 / 故知不是什么 + 故知是什么 ═══════ -->
+<section class="screen faq-screen" id="faq">
+  <div class="screen-inner">
+    <p class="bridge fade-in" data-i18n="faq.bridge">先把丑话说在前 ——</p>
+    <h2 class="heading fade-in" data-i18n-html="faq.heading">
+      故知<em>不是什么</em>，故知<em>是什么</em>。
+    </h2>
+
+    <div class="faq-grid fade-in delay-1">
+      <div class="faq-col is-not">
+        <div class="label" data-i18n="faq.notLabel">不 是</div>
+        <ul>
+          <li data-i18n-html="faq.not1"><strong>不是 dating app</strong>。<br>故知不打分、不滑卡、不"约"。</li>
+          <li data-i18n-html="faq.not2"><strong>不是 AI 朋友</strong>。<br>它不替代真人,不陪聊。</li>
+          <li data-i18n-html="faq.not3"><strong>不是 networking</strong>。<br>不是为了拓展人脉、不交换名片。</li>
+          <li data-i18n-html="faq.not4"><strong>不是知识社区</strong>。<br>不是讨论组,不发观点不点赞。</li>
+        </ul>
+      </div>
+
+      <div class="faq-col is-yes">
+        <div class="label" data-i18n="faq.yesLabel">是</div>
+        <ul>
+          <li data-i18n-html="faq.yes1">是给那种<em>"最近一直在想一件事，没人接得住"</em>的状态。</li>
+          <li data-i18n-html="faq.yes2">是把你说过的话和别人说过的话<em>放在一张图上</em>,看谁和你在同一件事上想得最深。</li>
+          <li data-i18n-html="faq.yes3">是为了那<em>一段不用解释也能被接住的对话</em> —— 不论它来自朋友、恋人、还是只见一次的陌生人。</li>
+          <li data-i18n-html="faq.yes4">是把"在同一家面馆遇到那个人"这件事,<em>往前推一点点</em>。</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="faq-footer fade-in delay-2" data-i18n-html="faq.footer">
+      关系是恋爱、是友情、是同行、还是只见一面的萍水相逢 ——<br>
+      <em>那是你和那个人之后的事</em>。<br>
+      故知只负责把你们送到同一家面馆。
+    </p>
   </div>
 </section>
 
@@ -603,9 +737,10 @@ document.getElementById('waitlist-form').addEventListener('submit', async functi
 const I18N = {
   zh: {
     'hero.brand': '故 知 · G U Z H I',
-    'hero.title': '在虚拟里<span class="accent">相识</span>，<br>在现实里<span class="accent">相认</span>。',
+    'hero.title': '在虚拟里<span class="accent">相知</span>，<br>在现实里<span class="accent">相识</span>。',
     'hero.lede': '他乡遇故知 —— 换一种发生方式。',
-    'hero.tagline': '不是配对，是先认识，再相认。',
+    'hero.usecase': '写下你最近一直在想的事 —— 故知会找到<em>也在想同一件事的人</em>。',
+
     'hero.scroll': '↓ 往 下 看',
     'story.bridge': '它是怎么做到的？',
     'story.num': '/ 0 1 &nbsp;&nbsp; 先 算 出 来 ， 再 撞 上',
@@ -616,6 +751,19 @@ const I18N = {
     'cta.name': '走 进 故 知',
     'cta.desc': '看 30 个人的匹配网络，<br>挑一个跟着走，<br>看她在镇上遇到谁、又错过谁。',
     'cta.arrow': '进 入 →',
+    'faq.bridge': '先把丑话说在前 ——',
+    'faq.heading': '故知<em>不是什么</em>，故知<em>是什么</em>。',
+    'faq.notLabel': '不 是',
+    'faq.not1': '<strong>不是 dating app</strong>。<br>故知不打分、不滑卡、不"约"。',
+    'faq.not2': '<strong>不是 AI 朋友</strong>。<br>它不替代真人，不陪聊。',
+    'faq.not3': '<strong>不是 networking</strong>。<br>不是为了拓展人脉、不交换名片。',
+    'faq.not4': '<strong>不是知识社区</strong>。<br>不是讨论组，不发观点不点赞。',
+    'faq.yesLabel': '是',
+    'faq.yes1': '是给那种<em>"最近一直在想一件事，没人接得住"</em>的状态。',
+    'faq.yes2': '是把你说过的话和别人说过的话<em>放在一张图上</em>，看谁和你在同一件事上想得最深。',
+    'faq.yes3': '是为了那<em>一段不用解释也能被接住的对话</em> —— 不论它来自朋友、恋人、还是只见一次的陌生人。',
+    'faq.yes4': '是把"在同一家面馆遇到那个人"这件事，<em>往前推一点点</em>。',
+    'faq.footer': '关系是恋爱、是友情、是同行、还是只见一面的萍水相逢 ——<br><em>那是你和那个人之后的事</em>。<br>故知只负责把你们送到同一家面馆。',
     'wait.bridge': '如果你也想要这样的相遇 ——',
     'wait.heading': '留 个 邮 箱 ，<br><em>先 站 在 这 里</em>。',
     'wait.sub': '我想试着拉一群真实的人，<br>真跑一次故知 —— 真算一次匹配、真让两个人见面或聊上。<br><span style="color:var(--muted);font-size:0.92em">留邮箱不算报名 —— 算是<em style="color:var(--accent);font-style:normal">告诉我你在</em>。<br>真去做这件事，名单上的人最先知道。<br>在这之前，<em style="color:var(--accent);font-style:normal">下一封信</em>也会先发给你。</span>',
@@ -639,9 +787,10 @@ const I18N = {
   },
   en: {
     'hero.brand': 'G U Z H I',
-    'hero.title': '<span class="accent">Meet</span> in the virtual.<br><span class="accent">Recognize</span> in the real.',
-    'hero.lede': 'An old friend in a faraway land — a new way of meeting.',
-    'hero.tagline': "Not to match. To recognize someone you've already known.",
+    'hero.title': '<span class="accent">Know</span> each other in the virtual.<br><span class="accent">Recognize</span> each other in the real.',
+    'hero.lede': 'An old friend in a faraway land — a new way of it happening.',
+    'hero.usecase': 'Write down what you’ve been turning over lately — Guzhi finds <em>the people turning over the same thing</em>.',
+    'hero.tagline': 'Whether you end up friends, lovers, or strangers who only meet once — that’s up to you two.',
     'hero.scroll': '↓ S C R O L L',
     'story.bridge': 'So how does it work?',
     'story.num': '/ 0 1 &nbsp;&nbsp; A L G O R I T H M ， T H E N  M E E T I N G',
@@ -652,6 +801,19 @@ const I18N = {
     'cta.name': 'Walk into Guzhi',
     'cta.desc': "See 30 people's match network.<br>Pick one to follow.<br>Watch who she meets — and who she misses.",
     'cta.arrow': 'E N T E R →',
+    'faq.bridge': 'Before anything else —',
+    'faq.heading': 'What Guzhi <em>isn’t</em>. What it <em>is</em>.',
+    'faq.notLabel': "I S N ' T",
+    'faq.not1': "<strong>Not a dating app.</strong><br>No scoring, no swiping, no “let’s grab a drink.”",
+    'faq.not2': "<strong>Not an AI friend.</strong><br>It doesn’t replace people. It doesn’t chat with you.",
+    'faq.not3': '<strong>Not networking.</strong><br>It’s not about widening your circle or trading cards.',
+    'faq.not4': '<strong>Not a knowledge community.</strong><br>No threads, no opinions, no likes.',
+    'faq.yesLabel': 'I S',
+    'faq.yes1': 'For the state of <em>"I keep turning this over and nobody around me catches it."</em>',
+    'faq.yes2': 'Putting what you’ve said and what others have said <em>on the same graph</em> — to find who has been thinking the deepest about the same thing.',
+    'faq.yes3': 'For <em>the one conversation where you don’t have to explain yourself</em> — whether that person becomes a friend, a partner, or a stranger you meet once.',
+    'faq.yes4': '<em>Nudging</em> "being in the same noodle place" forward by a small step.',
+    'faq.footer': 'Whether it turns into love, friendship, collaboration, or just one good meeting —<br><em>that’s between you and them, afterward</em>.<br>Guzhi only gets you into the same noodle place.',
     'wait.bridge': 'If you also want this kind of meeting ——',
     'wait.heading': 'Leave an email.<br><em>Just stand here for now.</em>',
     'wait.sub': "I'd like to try gathering a real group of people<br>and run Guzhi for real — actually compute matches, actually let two people meet or talk.<br><span style=\"color:var(--muted);font-size:0.92em\">Leaving your email isn't signing up — it's <em style=\"color:var(--accent);font-style:normal\">telling me you're here</em>.<br>If I do this thing, you'll be the first to know.<br>Before then, <em style=\"color:var(--accent);font-style:normal\">the next letter</em> goes to you first too.</span>",
