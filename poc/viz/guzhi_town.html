@@ -1766,6 +1766,15 @@ function applyI18n(lang) {
   if (typeof renderEvents === 'function') renderEvents();
   if (typeof renderCard === 'function') renderCard();
   if (typeof renderStats === 'function') renderStats();
+  // i18n 替换会把 intro-name / ending-name 这种"动态填充的 em"清空,
+  // 重新填回去。
+  if (highlightedId && typeof personaById !== 'undefined' && personaById[highlightedId]) {
+    const me = personaById[highlightedId];
+    const introNameEl = document.getElementById('intro-name');
+    if (introNameEl) introNameEl.textContent = me.name;
+    const endingNameEl = document.getElementById('ending-name');
+    if (endingNameEl) endingNameEl.textContent = me.name;
+  }
   try { sessionStorage.setItem('guzhi_lang', lang); } catch (e) {}
 }
 document.querySelectorAll('#lang-toggle button').forEach(b => {
