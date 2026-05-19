@@ -2,9 +2,11 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>故知小镇 · 回放</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="apple-touch-icon" href="/favicon.svg">
+<meta name="theme-color" content="#14110f">
 <style>
   :root {
     --bg: #14110f;
@@ -490,9 +492,54 @@
   #lang-toggle button.active {
     color: #e0a05a; background: rgba(50, 42, 36, 0.6);
   }
+
+  /* Mobile 软提示横幅 */
+  #mobile-notice {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 9500;
+    background: rgba(31, 27, 24, 0.96);
+    border-bottom: 1px solid #3a342e;
+    backdrop-filter: blur(8px);
+    color: #e8e2d8;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 14px 18px 14px 18px;
+    text-align: center;
+  }
+  #mobile-notice strong { color: #e0a05a; font-weight: 500; }
+  #mobile-notice .mn-close {
+    position: absolute;
+    top: 8px; right: 12px;
+    background: transparent; border: none;
+    color: #8a8178; font-size: 18px;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+  @media (max-width: 720px) {
+    #mobile-notice { display: block; }
+    body { overflow: auto !important; height: auto !important;
+           padding-top: 64px; }
+    #app { flex-direction: column; height: auto !important; }
+    #stage { min-height: 55vh; }
+    #panel {
+      width: 100% !important;
+      max-height: 45vh;
+      overflow-y: auto;
+      border-left: none !important;
+      border-top: 1px solid var(--line);
+    }
+    .nav-back { top: 72px !important; font-size: 11px; padding: 8px 12px; }
+    #lang-toggle { top: 72px !important; right: 16px !important; }
+  }
 </style>
 </head>
 <body>
+<div id="mobile-notice">
+  <button class="mn-close" onclick="this.parentElement.style.display='none'" aria-label="dismiss">✕</button>
+  <span data-i18n-html="mobile.notice">这个 demo 在 <strong>桌面</strong> 上看效果最好。手机也能将就看一眼。</span>
+</div>
 <a class="nav-back" href="../../index.html" data-i18n="nav.back">← 回 故知</a>
 <div id="lang-toggle">
   <button data-lang="zh" class="active">中</button>
@@ -1523,6 +1570,7 @@ const I18N = {
     'play.play': '▶ 播放',
     'play.pause': '⏸ 暂停',
     'play.replay': '▶ 重播',
+    'mobile.notice': '这个 demo 在 <strong>桌面</strong> 上看效果最好。手机也能将就看一眼。',
   },
   en: {
     'nav.back': '← Back',
@@ -1551,6 +1599,7 @@ const I18N = {
     'play.play': '▶ Play',
     'play.pause': '⏸ Pause',
     'play.replay': '▶ Replay',
+    'mobile.notice': 'This demo is meant for <strong>desktop</strong>. On mobile you can still glance at it.',
   },
 };
 let currentLang = 'zh';
