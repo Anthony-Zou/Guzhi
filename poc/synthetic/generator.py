@@ -49,6 +49,39 @@ _GIVEN_FEMALE = [
     "归宁", "拂衣", "明远", "棠予", "守静", "如砚",
 ]
 
+# ── 英文人物池(切到 EN 时用) ────────────────────────────
+# 不音译,挑文气 + 中性现代 + 有故事感的英文名。
+# 故意没用 Ashton / Brandon 这种太常见的;故事感优先。
+_SURNAMES_EN = [
+    "Reyes", "Mori", "Vale", "Crane", "Lane", "Quinn", "Hart",
+    "Wren", "Bauer", "Greer", "Holt", "Marsh", "Frost", "Sinclair",
+    "Auerbach", "Sato", "Aoki", "Lin", "Chen", "Park",
+    "Castellan", "Nakamura", "Solberg", "Okafor", "Bose",
+    "Iqbal", "Reinhart", "Donatelli", "Voss", "Tassi",
+    "Hadid", "Selva", "Rivera", "Khan", "Park",
+    "Yu", "Zhao", "Hsiao", "Park", "Adell",
+]
+_GIVEN_MALE_EN = [
+    "Eli", "Caspar", "Lior", "Auden", "Theo", "Soren", "Felix",
+    "Casimir", "Ambrose", "Levi", "Roman", "Jasper", "Silas",
+    "Reza", "Mateo", "Yusuf", "Hugo", "Anders", "Cyrus",
+    "Tobias", "Linus", "Emil", "Hayao", "Idris", "Nico",
+    "Asher", "Otto", "Atlas", "Wilder", "Beck", "Rune",
+    "Kohaku", "Adrien", "Damian", "Elias", "Aramis", "Quill",
+    "Inigo", "Renzo", "Sage", "Aurelio", "Aiden", "Lior",
+    "Jonas", "Orlando", "Cassian", "Henrik", "Mateusz",
+]
+_GIVEN_FEMALE_EN = [
+    "June", "Mira", "Liva", "Anwen", "Ines", "Saoirse", "Lyra",
+    "Imani", "Eira", "Nadia", "Wren", "Vera", "Yuki", "Ruth",
+    "Cleo", "Naoko", "Theia", "Iris", "Phaedra", "Anya",
+    "Maren", "Sofie", "Tova", "Briar", "Nori", "Linnea",
+    "Esme", "Tamsin", "Maia", "Niamh", "Yael", "Vesper",
+    "Marit", "Hadley", "Sigrid", "Yana", "Mio", "Soraya",
+    "Lila", "Astrid", "Inanna", "Reema", "Ondine", "Calla",
+    "Sennen", "Halia", "Ines",
+]
+
 
 # ============================================================
 # 特质库
@@ -65,6 +98,9 @@ class TraitLibrary:
     tension_pairs: list[tuple[str, str, str]]
     style_tags: list[str]
     style_complement_pairs: list[tuple[str, str]]
+    # i18n: 簇名 / 标签的英文映射(可选,前端切 EN 时取)
+    cluster_name_en: dict[str, str] = field(default_factory=dict)
+    cluster_label_en: dict[str, str] = field(default_factory=dict)
 
     @staticmethod
     def default() -> "TraitLibrary":
@@ -206,6 +242,35 @@ class TraitLibrary:
             ("激昂热烈", "平静温和"),
             ("抽象思辨", "具象画面"),
         ]
+        # i18n: 簇名 / 标签的英文版。手写,不机翻 —— 文气保住。
+        cluster_name_en = {
+            "S1": "Stay or leave",
+            "S2": "Holding on through the trough",
+            "S3": "Reassembling the self",
+            "S4": "Asking what for",
+            "S5": "Anti-efficiency",
+            "S6": "The beauty of form",
+            "S7": "On one's own terms",
+            "S8": "Honesty above all",
+            "S9": "Against performative positivity",
+            "S10": "Slow-cinema taste",
+            "S11": "Out where the wind is",
+            "S12": "Classical music",
+        }
+        cluster_label_en = {
+            "S1": "the one in between",
+            "S2": "the one holding on",
+            "S3": "the one reassembling",
+            "S4": "the one who asks why",
+            "S5": "the one who refuses the grind",
+            "S6": "the one who loves form",
+            "S7": "the one walking alone",
+            "S8": "the honest one",
+            "S9": "allergic to fake positivity",
+            "S10": "the slow-cinema watcher",
+            "S11": "the one outside",
+            "S12": "the classical listener",
+        }
         return TraitLibrary(
             clusters=clusters,
             cluster_entities=cluster_entities,
@@ -215,6 +280,8 @@ class TraitLibrary:
             tension_pairs=tension_pairs,
             style_tags=style_tags,
             style_complement_pairs=style_complement_pairs,
+            cluster_name_en=cluster_name_en,
+            cluster_label_en=cluster_label_en,
         )
 
 
@@ -232,8 +299,13 @@ class PersonaGenerator:
         # 否则同一个 seed 会生成不同的人，破坏可复现性和已有验证。
         self._trait_rng = random.Random(seed)
         self._name_rng = random.Random(seed + 100000)
+        # EN 名字用独立 rng,这样加入 EN 名字生成不会扰乱 ZH 性别分布
+        self._name_en_rng = random.Random(seed + 200000)
         # 已用过的姓名集合,_human_name 内部去重 —— 保证 30 人小镇内无重名
         self._used_names: set[str] = set()
+        self._used_names_en: set[str] = set()
+        # pid -> 对应的英文名(随 ZH 名一起生成,持久映射)
+        self._en_name_by_pid: dict[str, str] = {}
 
     def generate(self, count: int) -> list[Persona]:
         """生成指定数量的合成人物。"""
@@ -298,9 +370,16 @@ class PersonaGenerator:
         name_rng = self._name_rng
         gender = name_rng.choice(["male", "female"])
         name = self._human_name(name_rng, gender)
+        # 同时生成一个英文名,记到 pid -> name_en 字典里;EN UI 时取
+        # 用独立 rng 不污染 ZH 流
+        self._en_name_by_pid[pid] = self._human_name_en(self._name_en_rng, gender)
         archetype = self._archetype(chosen_clusters)
         return Persona(id=pid, name=name, edges=tuple(edges),
                        gender=gender, archetype=archetype)
+
+    def name_en_for(self, pid: str) -> str:
+        """返回该 pid 对应的英文名。需要先 generate() 过。"""
+        return self._en_name_by_pid.get(pid, pid)
 
     def _human_name(self, rng: random.Random, gender: str) -> str:
         """生成一个中文真人名,与性别匹配,且在一次 generate() 内不重名。
@@ -325,6 +404,23 @@ class PersonaGenerator:
             i += 1
         result = f"{fallback}·{i}"
         self._used_names.add(result)
+        return result
+
+    def _human_name_en(self, rng: random.Random, gender: str) -> str:
+        """生成一个英文名,format: 'Given Surname'。同样在 batch 内去重。"""
+        given_pool = _GIVEN_MALE_EN if gender == "male" else _GIVEN_FEMALE_EN
+        for _ in range(50):
+            candidate = rng.choice(given_pool) + " " + rng.choice(_SURNAMES_EN)
+            if candidate not in self._used_names_en:
+                self._used_names_en.add(candidate)
+                return candidate
+        # 池耗尽兜底
+        fallback = rng.choice(given_pool) + " " + rng.choice(_SURNAMES_EN)
+        i = 2
+        while f"{fallback} {i}" in self._used_names_en:
+            i += 1
+        result = f"{fallback} {i}"
+        self._used_names_en.add(result)
         return result
 
     def _archetype(self, chosen_clusters: list[str]) -> str:

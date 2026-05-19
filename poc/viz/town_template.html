@@ -1263,6 +1263,10 @@ function renderEvents() {
 
   list.querySelectorAll('.event').forEach(el => {
     el.addEventListener('click', () => {
+      // 点 event 自动暂停 —— 列表一直在 re-render,不暂停手机点不准
+      playing = false;
+      const playBtn = document.getElementById('play-btn');
+      if (playBtn) playBtn.textContent = t('play.play');
       const idx = parseInt(el.getAttribute('data-idx'));
       const e = DATA.events[idx];
       renderTick(e.tick);
@@ -1608,6 +1612,43 @@ function t(key) {
 }
 function applyI18n(lang) {
   currentLang = lang;
+  // 切人名 / 簇名 / event 里的人名+簇名,这样下游 render 不需要改
+  function swapDataLang(d) {
+    if (!d) return;
+    if (d.personas) d.personas.forEach(p => {
+      if (!p._name_zh) p._name_zh = p.name;
+      if (!p._name_en) p._name_en = p.name_en || p.name;
+      p.name = (lang === 'en') ? p._name_en : p._name_zh;
+    });
+    if (d.clusters) Object.values(d.clusters).forEach(c => {
+      if (!c._name_zh) c._name_zh = c.name;
+      if (!c._name_en) c._name_en = c.name_en || c.name;
+      c.name = (lang === 'en') ? c._name_en : c._name_zh;
+      if (!c._desc_zh) c._desc_zh = c.description;
+      if (!c._desc_en) c._desc_en = c.description_en || c.description;
+      c.description = (lang === 'en') ? c._desc_en : c._desc_zh;
+    });
+    if (d.events) d.events.forEach(e => {
+      if (!e._a_name_zh) e._a_name_zh = e.a_name;
+      if (!e._b_name_zh) e._b_name_zh = e.b_name;
+      if (!e._a_name_en) e._a_name_en = e.a_name_en || e.a_name;
+      if (!e._b_name_en) e._b_name_en = e.b_name_en || e.b_name;
+      e.a_name = (lang === 'en') ? e._a_name_en : e._a_name_zh;
+      e.b_name = (lang === 'en') ? e._b_name_en : e._b_name_zh;
+      if (e.seed) {
+        if (!e.seed._cluster_name_zh) e.seed._cluster_name_zh = e.seed.cluster_name;
+        if (!e.seed._cluster_name_en) e.seed._cluster_name_en = e.seed.cluster_name_en || e.seed.cluster_name;
+        e.seed.cluster_name = (lang === 'en') ? e.seed._cluster_name_en : e.seed._cluster_name_zh;
+      }
+    });
+  }
+  if (typeof BUNDLE !== 'undefined') {
+    swapDataLang(BUNDLE.random);
+    swapDataLang(BUNDLE.social);
+  }
+  // rebindPersonaIndex 后, personaById 会重新指向更新过的 persona
+  if (typeof rebindPersonaIndex === 'function') rebindPersonaIndex();
+
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const v = t(el.getAttribute('data-i18n'));
     if (v) el.textContent = v;
@@ -1626,22 +1667,33 @@ function applyI18n(lang) {
     if (currentTick >= DATA.n_ticks - 1) pb.textContent = t('play.replay');
     else pb.textContent = playing ? t('play.pause') : t('play.play');
   }
-  try { localStorage.setItem('guzhi_lang', lang); } catch (e) {}
+  // 重渲所有依赖语言的视图
+  if (typeof renderTick === 'function') renderTick(currentTick);
+  if (typeof renderEvents === 'function') renderEvents();
+  if (typeof renderCard === 'function') renderCard();
+  if (typeof renderStats === 'function') renderStats();
+  try { sessionStorage.setItem('guzhi_lang', lang); } catch (e) {}
 }
 document.querySelectorAll('#lang-toggle button').forEach(b => {
   b.addEventListener('click', () => applyI18n(b.getAttribute('data-lang')));
 });
 (function initLang() {
-  let lang = 'zh';
+  // 优先级: URL > navigator.language > session fallback
+  // localStorage 故意不用 —— 切过 EN 不变永久状态。
+  let lang;
   try {
     const urlLang = new URLSearchParams(location.search).get('lang');
-    if (urlLang === 'zh' || urlLang === 'en') lang = urlLang;
-    else {
-      const saved = localStorage.getItem('guzhi_lang');
-      if (saved === 'zh' || saved === 'en') lang = saved;
-      else if (!navigator.language.startsWith('zh')) lang = 'en';
+    if (urlLang === 'zh' || urlLang === 'en') {
+      lang = urlLang;
+    } else if (navigator.language && navigator.language.startsWith('zh')) {
+      lang = 'zh';
+    } else if (navigator.language) {
+      lang = 'en';
+    } else {
+      const saved = sessionStorage.getItem('guzhi_lang');
+      lang = (saved === 'zh' || saved === 'en') ? saved : 'zh';
     }
-  } catch (e) {}
+  } catch (e) { lang = 'zh'; }
   applyI18n(lang);
 })();
 </script>

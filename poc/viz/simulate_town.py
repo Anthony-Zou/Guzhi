@@ -195,7 +195,8 @@ def simulate(mode: str = "random") -> dict:
         raise ValueError(f"mode must be 'random' or 'social', got {mode!r}")
 
     lib = TraitLibrary.default()
-    personas = PersonaGenerator(lib, seed=SEED).generate(N_PERSONAS)
+    gen = PersonaGenerator(lib, seed=SEED)
+    personas = gen.generate(N_PERSONAS)
     by_id = {p.id: p for p in personas}
     narrator = StubNarrator()
     # 主流随机数：游走决策
@@ -267,6 +268,8 @@ def simulate(mode: str = "random") -> dict:
                     "tick": tick,
                     "a_id": a_id, "b_id": b_id,
                     "a_name": a.name, "b_name": b.name,
+                    "a_name_en": gen.name_en_for(a_id),
+                    "b_name_en": gen.name_en_for(b_id),
                     "a_pos": list(positions[a_id]),
                     "b_pos": list(positions[b_id]),
                     "matched": r.matched,
@@ -284,6 +287,7 @@ def simulate(mode: str = "random") -> dict:
                             "seed_type": top.seed_type,
                             "cluster": top.cluster,
                             "cluster_name": lib.clusters[top.cluster].name,
+                            "cluster_name_en": lib.cluster_name_en.get(top.cluster, lib.clusters[top.cluster].name),
                             "a_entity": top.a_entity,
                             "b_entity": top.b_entity,
                             "weight": top.weight,
@@ -341,6 +345,7 @@ def simulate(mode: str = "random") -> dict:
         personas_meta.append({
             "id": p.id,
             "name": p.name,
+            "name_en": gen.name_en_for(p.id),
             "gender": p.gender,
             "archetype": p.archetype,
             "one_liner": one_liner,
@@ -372,11 +377,27 @@ def simulate(mode: str = "random") -> dict:
         "S11": "户外行动派 —— 徒步、长跑、攀岩",
         "S12": "古典乐迷 —— 巴赫、马勒、肖邦",
     }
+    cluster_descriptions_en = {
+        "S1": "Caught between staying and leaving — is this city worth it, should I go home",
+        "S2": "Holding on through a trough — tired enough to stop, afraid that stopping ruins everything",
+        "S3": "An identity being reassembled — I'm not who I was, and the new one isn't here yet",
+        "S4": "Asking what for — does any of this mean anything, who am I living for",
+        "S5": "Anti-grind — not to be quantified by KPIs, slowing down isn't a failure",
+        "S6": "Devoted to form — clean, restrained, boring tools are the good ones",
+        "S7": "On their own terms — not attached to any institution, defining success themselves",
+        "S8": "Honesty above all — would rather be blunt than polite",
+        "S9": "Allergic to performative positivity — corporate cheer, fake warmth",
+        "S10": "Slow-cinema watcher — Kurosawa, Hou Hsiao-Hsien, Tsai Ming-liang",
+        "S11": "Out where the wind is — hiking, long-distance running, climbing",
+        "S12": "Classical listener — Bach, Mahler, Chopin",
+    }
     clusters_meta = {
         cid: {
             "name": c.name,
+            "name_en": lib.cluster_name_en.get(cid, c.name),
             "level": c.level.value,
             "description": cluster_descriptions.get(cid, ""),
+            "description_en": cluster_descriptions_en.get(cid, ""),
         }
         for cid, c in lib.clusters.items()
     }

@@ -698,21 +698,34 @@ function applyI18n(lang) {
   // demo 入口链接带上 lang，让 demo 页继承当前语言
   const demoLink = document.getElementById('demo-entry-link');
   if (demoLink) demoLink.setAttribute('href', `poc/viz/guzhi_viz.html?lang=${lang}`);
-  try { localStorage.setItem('guzhi_lang', lang); } catch (e) {}
+  try { sessionStorage.setItem('guzhi_lang', lang); } catch (e) {}
 }
 
 document.querySelectorAll('#lang-toggle button').forEach(b => {
   b.addEventListener('click', () => applyI18n(b.getAttribute('data-lang')));
 });
 
-// 启动时按 localStorage / navigator.language 决定初始语言
+// 启动时决定语言。优先级:
+//   1) URL ?lang= (强制覆盖)
+//   2) navigator.language (系统母语 —— 默认要尊重这个)
+//   3) sessionStorage (当前 session 内用户切过手动语言时的 fallback)
+// 故意不用 localStorage —— 切过一次 EN 不会变成永久状态。
+// 关掉浏览器再来,回到系统母语。
 (function initLang() {
-  let lang = 'zh';
+  let lang;
   try {
-    const saved = localStorage.getItem('guzhi_lang');
-    if (saved === 'zh' || saved === 'en') lang = saved;
-    else if (!navigator.language.startsWith('zh')) lang = 'en';
-  } catch (e) {}
+    const urlLang = new URLSearchParams(location.search).get('lang');
+    if (urlLang === 'zh' || urlLang === 'en') {
+      lang = urlLang;
+    } else if (navigator.language && navigator.language.startsWith('zh')) {
+      lang = 'zh';
+    } else if (navigator.language) {
+      lang = 'en';
+    } else {
+      const saved = sessionStorage.getItem('guzhi_lang');
+      lang = (saved === 'zh' || saved === 'en') ? saved : 'zh';
+    }
+  } catch (e) { lang = 'zh'; }
   applyI18n(lang);
 })();
 </script>

@@ -26,21 +26,30 @@ OUTPUT = os.path.join(HERE, "guzhi_viz.html")
 
 def build_payload() -> dict:
     lib = TraitLibrary.default()
-    personas = PersonaGenerator(lib, seed=SEED).generate(COUNT)
+    gen = PersonaGenerator(lib, seed=SEED)
+    personas = gen.generate(COUNT)
     truth = ground_truth_for(personas, lib)
 
-    # 簇定义
+    # 簇定义 — 同时提供 zh 和 en 的 name / label
     clusters_json = {
-        cid: {"name": c.name, "level": c.level.value, "signal": c.signal}
+        cid: {
+            "name": c.name,
+            "name_en": lib.cluster_name_en.get(cid, c.name),
+            "label": lib.cluster_label.get(cid, c.name),
+            "label_en": lib.cluster_label_en.get(cid, lib.cluster_name_en.get(cid, c.name)),
+            "level": c.level.value,
+            "signal": c.signal,
+        }
         for cid, c in lib.clusters.items()
     }
 
-    # 人物（含边）
+    # 人物（含边） — 加 name_en 给前端切换语言用
     personas_json = []
     for p in personas:
         personas_json.append({
             "id": p.id,
             "name": p.name,
+            "name_en": gen.name_en_for(p.id),
             "gender": p.gender,
             "archetype": p.archetype,
             "clusters": sorted(p.clusters_present()),

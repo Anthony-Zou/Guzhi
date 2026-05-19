@@ -467,24 +467,30 @@ function applyI18n(lang) {
   if (back) back.setAttribute('href', `../index.html?lang=${lang}`);
   const sub = document.querySelector('.subscribe a');
   if (sub) sub.setAttribute('href', `../index.html?lang=${lang}#waitlist`);
-  try { localStorage.setItem('guzhi_lang', lang); } catch (e) {}
+  try { sessionStorage.setItem('guzhi_lang', lang); } catch (e) {}
 }
 
 document.querySelectorAll('#lang-toggle button').forEach(b => {
   b.addEventListener('click', () => applyI18n(b.getAttribute('data-lang')));
 });
 
+// 优先级: URL > navigator.language > session fallback
+// localStorage 故意不用 —— 切过一次 EN 不会成为永久状态。
 (function initLang() {
-  let lang = 'zh';
+  let lang;
   try {
     const urlLang = new URLSearchParams(location.search).get('lang');
-    if (urlLang === 'zh' || urlLang === 'en') lang = urlLang;
-    else {
-      const saved = localStorage.getItem('guzhi_lang');
-      if (saved === 'zh' || saved === 'en') lang = saved;
-      else if (!navigator.language.startsWith('zh')) lang = 'en';
+    if (urlLang === 'zh' || urlLang === 'en') {
+      lang = urlLang;
+    } else if (navigator.language && navigator.language.startsWith('zh')) {
+      lang = 'zh';
+    } else if (navigator.language) {
+      lang = 'en';
+    } else {
+      const saved = sessionStorage.getItem('guzhi_lang');
+      lang = (saved === 'zh' || saved === 'en') ? saved : 'zh';
     }
-  } catch (e) {}
+  } catch (e) { lang = 'zh'; }
   applyI18n(lang);
 })();
 </script>
