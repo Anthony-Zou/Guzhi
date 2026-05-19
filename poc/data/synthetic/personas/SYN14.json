@@ -1,0 +1,50 @@
+{
+  "id": "SYN14",
+  "name": "宋宛之",
+  "gender": "female",
+  "archetype": "重组中的我·独行者",
+  "edges": [
+    {
+      "relation": "BELIEVES",
+      "entity": "拒绝被安排的人生",
+      "strength": 0.76,
+      "cluster": "S7",
+      "evidence": "（合成）拒绝被安排的人生"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "别人眼里的我和我自己差很远",
+      "strength": 0.71,
+      "cluster": "S3",
+      "evidence": "（合成）别人眼里的我和我自己差很远"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "写手账",
+      "strength": 0.54,
+      "cluster": null,
+      "evidence": "（合成噪音）写手账"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "平静温和",
+      "strength": 0.88,
+      "cluster": null,
+      "evidence": "（合成风格）平静温和"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "具象画面",
+      "strength": 0.67,
+      "cluster": null,
+      "evidence": "（合成风格）具象画面"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "直球简洁",
+      "strength": 0.65,
+      "cluster": null,
+      "evidence": "（合成风格）直球简洁"
+    }
+  ]
+}

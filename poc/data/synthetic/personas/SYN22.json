@@ -1,0 +1,57 @@
+{
+  "id": "SYN22",
+  "name": "李晓雨",
+  "gender": "female",
+  "archetype": "形式之美的信徒·独行者",
+  "edges": [
+    {
+      "relation": "BELIEVES",
+      "entity": "形式本身就是内容",
+      "strength": 0.79,
+      "cluster": "S6",
+      "evidence": "（合成）形式本身就是内容"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "简洁代码的优雅",
+      "strength": 0.87,
+      "cluster": "S6",
+      "evidence": "（合成）简洁代码的优雅"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "我的节奏我自己定",
+      "strength": 0.72,
+      "cluster": "S7",
+      "evidence": "（合成）我的节奏我自己定"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "人不该被KPI量化",
+      "strength": 0.88,
+      "cluster": "S5",
+      "evidence": "（合成）人不该被KPI量化"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "从稳定工作转向自由职业",
+      "strength": 0.79,
+      "cluster": null,
+      "evidence": "（合成噪音）从稳定工作转向自由职业"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "学术理性",
+      "strength": 0.74,
+      "cluster": null,
+      "evidence": "（合成风格）学术理性"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "直球简洁",
+      "strength": 0.63,
+      "cluster": null,
+      "evidence": "（合成风格）直球简洁"
+    }
+  ]
+}

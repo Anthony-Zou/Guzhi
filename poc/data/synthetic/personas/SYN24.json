@@ -1,0 +1,106 @@
+{
+  "id": "SYN24",
+  "name": "王南乔",
+  "gender": "female",
+  "archetype": "低谷里的人·去留之间",
+  "edges": [
+    {
+      "relation": "FEELS_NOW",
+      "entity": "停下来会不会就起不来了",
+      "strength": 0.8,
+      "cluster": "S2",
+      "evidence": "（合成）停下来会不会就起不来了"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "是不是快撑不住了",
+      "strength": 0.75,
+      "cluster": "S2",
+      "evidence": "（合成）是不是快撑不住了"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "王家卫",
+      "strength": 0.78,
+      "cluster": "S10",
+      "evidence": "（合成）王家卫"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "侯孝贤",
+      "strength": 0.76,
+      "cluster": "S10",
+      "evidence": "（合成）侯孝贤"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "要不要换个城市",
+      "strength": 0.7,
+      "cluster": "S1",
+      "evidence": "（合成）要不要换个城市"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "该不该为了人留下",
+      "strength": 0.81,
+      "cluster": "S1",
+      "evidence": "（合成）该不该为了人留下"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "对粗糙的容忍度很低",
+      "strength": 0.88,
+      "cluster": "S6",
+      "evidence": "（合成）对粗糙的容忍度很低"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "精确本身令人安心",
+      "strength": 0.79,
+      "cluster": "S6",
+      "evidence": "（合成）精确本身令人安心"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "收集地图",
+      "strength": 0.8,
+      "cluster": null,
+      "evidence": "（合成噪音）收集地图"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "参与过社会公益活动",
+      "strength": 0.79,
+      "cluster": null,
+      "evidence": "（合成噪音）参与过社会公益活动"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "照顾过生病的家人",
+      "strength": 0.53,
+      "cluster": null,
+      "evidence": "（合成噪音）照顾过生病的家人"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "学术理性",
+      "strength": 0.77,
+      "cluster": null,
+      "evidence": "（合成风格）学术理性"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "抽象思辨",
+      "strength": 0.8,
+      "cluster": null,
+      "evidence": "（合成风格）抽象思辨"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "紧凑高密度",
+      "strength": 0.7,
+      "cluster": null,
+      "evidence": "（合成风格）紧凑高密度"
+    }
+  ]
+}

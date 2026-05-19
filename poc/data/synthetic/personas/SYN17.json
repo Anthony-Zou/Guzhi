@@ -1,0 +1,85 @@
+{
+  "id": "SYN17",
+  "name": "刘南乔",
+  "gender": "female",
+  "archetype": "追问意义者·形式之美的信徒",
+  "edges": [
+    {
+      "relation": "LIKES",
+      "entity": "马勒",
+      "strength": 0.84,
+      "cluster": "S12",
+      "evidence": "（合成）马勒"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "拉赫玛尼诺夫",
+      "strength": 0.85,
+      "cluster": "S12",
+      "evidence": "（合成）拉赫玛尼诺夫"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "野外露营",
+      "strength": 0.8,
+      "cluster": "S11",
+      "evidence": "（合成）野外露营"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "努力的尽头是什么",
+      "strength": 0.86,
+      "cluster": "S4",
+      "evidence": "（合成）努力的尽头是什么"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "热闹之后的空虚感",
+      "strength": 0.82,
+      "cluster": "S4",
+      "evidence": "（合成）热闹之后的空虚感"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "结构之美高于装饰",
+      "strength": 0.85,
+      "cluster": "S6",
+      "evidence": "（合成）结构之美高于装饰"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "写手账",
+      "strength": 0.82,
+      "cluster": null,
+      "evidence": "（合成噪音）写手账"
+    },
+    {
+      "relation": "DISLIKES",
+      "entity": "无效会议",
+      "strength": 0.72,
+      "cluster": null,
+      "evidence": "（合成噪音）无效会议"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "慵懒散漫",
+      "strength": 0.69,
+      "cluster": null,
+      "evidence": "（合成风格）慵懒散漫"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "激昂热烈",
+      "strength": 0.66,
+      "cluster": null,
+      "evidence": "（合成风格）激昂热烈"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "冷面笑匠",
+      "strength": 0.84,
+      "cluster": null,
+      "evidence": "（合成风格）冷面笑匠"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "id": "SYN25",
+  "name": "高云深",
+  "gender": "male",
+  "archetype": "重组中的我·形式之美的信徒",
+  "edges": [
+    {
+      "relation": "BELIEVES",
+      "entity": "少即是多",
+      "strength": 0.89,
+      "cluster": "S6",
+      "evidence": "（合成）少即是多"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "身份变了内核还在不在",
+      "strength": 0.82,
+      "cluster": "S3",
+      "evidence": "（合成）身份变了内核还在不在"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "成长是不是在丢掉旧的我",
+      "strength": 0.8,
+      "cluster": "S3",
+      "evidence": "（合成）成长是不是在丢掉旧的我"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "宁可难听也要真话",
+      "strength": 0.72,
+      "cluster": "S8",
+      "evidence": "（合成）宁可难听也要真话"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "旧书店",
+      "strength": 0.77,
+      "cluster": null,
+      "evidence": "（合成噪音）旧书店"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "观察陌生人的生活",
+      "strength": 0.74,
+      "cluster": null,
+      "evidence": "（合成噪音）观察陌生人的生活"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "紧凑高密度",
+      "strength": 0.63,
+      "cluster": null,
+      "evidence": "（合成风格）紧凑高密度"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "抽象思辨",
+      "strength": 0.67,
+      "cluster": null,
+      "evidence": "（合成风格）抽象思辨"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "冷面笑匠",
+      "strength": 0.81,
+      "cluster": null,
+      "evidence": "（合成风格）冷面笑匠"
+    }
+  ]
+}

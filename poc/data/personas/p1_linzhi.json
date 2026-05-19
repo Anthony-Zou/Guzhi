@@ -1,0 +1,18 @@
+{
+  "id": "P1",
+  "name": "林知",
+  "edges": [
+    {"relation": "FEELS_NOW", "entity": "要不要回老家", "strength": 0.9, "cluster": "C1", "evidence": "最近一直在想要不要回成都老家"},
+    {"relation": "FEELS_NOW", "entity": "留下需要一个理由", "strength": 0.85, "cluster": "C1", "evidence": "留在这里这件事本身需要一个理由，而我答不上来"},
+    {"relation": "LIKES", "entity": "黑泽明", "strength": 0.95, "cluster": "C7", "evidence": "我痴迷黑泽明，乱看了八遍"},
+    {"relation": "BELIEVES", "entity": "野心会反噬人", "strength": 0.8, "cluster": "C7", "evidence": "每次都觉得野心这东西最后会反噬一个人"},
+    {"relation": "DISLIKES", "entity": "加班崇拜", "strength": 0.85, "cluster": "C2", "evidence": "受不了把加班=上进挂嘴边的人"},
+    {"relation": "BELIEVES", "entity": "人不该被KPI量化", "strength": 0.85, "cluster": "C2", "evidence": "人不是用来被KPI量的"},
+    {"relation": "BELIEVES", "entity": "慢下来不是错", "strength": 0.8, "cluster": "C2", "evidence": "慢下来不是错"},
+    {"relation": "EXPERIENCED", "entity": "北漂六年", "strength": 0.7, "cluster": null, "evidence": "北京漂了六年"},
+    {"relation": "LIKES", "entity": "独立游戏开发", "strength": 0.6, "cluster": null, "evidence": "做独立游戏"},
+    {"relation": "SPEAKS_AS", "entity": "冷面笑匠", "strength": 0.85, "cluster": null, "evidence": "朋友说我是冷面笑匠"},
+    {"relation": "SPEAKS_AS", "entity": "自嘲式幽默", "strength": 0.7, "cluster": null, "evidence": "损起来挺狠"},
+    {"relation": "SPEAKS_AS", "entity": "短句", "strength": 0.6, "cluster": null, "evidence": "话不多"}
+  ]
+}

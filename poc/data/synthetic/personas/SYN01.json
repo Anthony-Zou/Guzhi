@@ -1,0 +1,71 @@
+{
+  "id": "SYN01",
+  "name": "吴亦舟",
+  "gender": "male",
+  "archetype": "低谷里的人·去留之间",
+  "edges": [
+    {
+      "relation": "FEELS_NOW",
+      "entity": "能不能不再怕复发",
+      "strength": 0.87,
+      "cluster": "S2",
+      "evidence": "（合成）能不能不再怕复发"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "落脚的地方到底在哪",
+      "strength": 0.78,
+      "cluster": "S1",
+      "evidence": "（合成）落脚的地方到底在哪"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "效率不是最高价值",
+      "strength": 0.72,
+      "cluster": "S5",
+      "evidence": "（合成）效率不是最高价值"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "什么值得用一生去换",
+      "strength": 0.71,
+      "cluster": "S4",
+      "evidence": "（合成）什么值得用一生去换"
+    },
+    {
+      "relation": "DISLIKES",
+      "entity": "早起",
+      "strength": 0.58,
+      "cluster": null,
+      "evidence": "（合成噪音）早起"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "观察陌生人的生活",
+      "strength": 0.71,
+      "cluster": null,
+      "evidence": "（合成噪音）观察陌生人的生活"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "养猫",
+      "strength": 0.78,
+      "cluster": null,
+      "evidence": "（合成噪音）养猫"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "抽象思辨",
+      "strength": 0.65,
+      "cluster": null,
+      "evidence": "（合成风格）抽象思辨"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "怀旧调性",
+      "strength": 0.73,
+      "cluster": null,
+      "evidence": "（合成风格）怀旧调性"
+    }
+  ]
+}

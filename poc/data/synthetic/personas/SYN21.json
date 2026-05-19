@@ -1,0 +1,106 @@
+{
+  "id": "SYN21",
+  "name": "黄宛之",
+  "gender": "female",
+  "archetype": "去留之间·独行者",
+  "edges": [
+    {
+      "relation": "LIKES",
+      "entity": "巴赫",
+      "strength": 0.74,
+      "cluster": "S12",
+      "evidence": "（合成）巴赫"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "拉赫玛尼诺夫",
+      "strength": 0.77,
+      "cluster": "S12",
+      "evidence": "（合成）拉赫玛尼诺夫"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "在哪都像过客",
+      "strength": 0.89,
+      "cluster": "S1",
+      "evidence": "（合成）在哪都像过客"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "落脚的地方到底在哪",
+      "strength": 0.92,
+      "cluster": "S1",
+      "evidence": "（合成）落脚的地方到底在哪"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "小津安二郎",
+      "strength": 0.78,
+      "cluster": "S10",
+      "evidence": "（合成）小津安二郎"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "贾樟柯",
+      "strength": 0.66,
+      "cluster": "S10",
+      "evidence": "（合成）贾樟柯"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "不喜欢被纳入任何体系",
+      "strength": 0.9,
+      "cluster": "S7",
+      "evidence": "（合成）不喜欢被纳入任何体系"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "不需要被认可",
+      "strength": 0.93,
+      "cluster": "S7",
+      "evidence": "（合成）不需要被认可"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "观察陌生人的生活",
+      "strength": 0.71,
+      "cluster": null,
+      "evidence": "（合成噪音）观察陌生人的生活"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "在三个城市生活过",
+      "strength": 0.73,
+      "cluster": null,
+      "evidence": "（合成噪音）在三个城市生活过"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "做饭",
+      "strength": 0.53,
+      "cluster": null,
+      "evidence": "（合成噪音）做饭"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "直球简洁",
+      "strength": 0.62,
+      "cluster": null,
+      "evidence": "（合成风格）直球简洁"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "紧凑高密度",
+      "strength": 0.71,
+      "cluster": null,
+      "evidence": "（合成风格）紧凑高密度"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "怀旧调性",
+      "strength": 0.66,
+      "cluster": null,
+      "evidence": "（合成风格）怀旧调性"
+    }
+  ]
+}

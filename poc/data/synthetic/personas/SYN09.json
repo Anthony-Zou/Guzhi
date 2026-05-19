@@ -1,0 +1,92 @@
+{
+  "id": "SYN09",
+  "name": "孙听澜",
+  "gender": "male",
+  "archetype": "去留之间·低谷里的人",
+  "edges": [
+    {
+      "relation": "FEELS_NOW",
+      "entity": "异乡待久了算不算家",
+      "strength": 0.72,
+      "cluster": "S1",
+      "evidence": "（合成）异乡待久了算不算家"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "留下还是离开",
+      "strength": 0.71,
+      "cluster": "S1",
+      "evidence": "（合成）留下还是离开"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "攀岩",
+      "strength": 0.71,
+      "cluster": "S11",
+      "evidence": "（合成）攀岩"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "桨板",
+      "strength": 0.79,
+      "cluster": "S11",
+      "evidence": "（合成）桨板"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "想躺平又怕真的废掉",
+      "strength": 0.89,
+      "cluster": "S2",
+      "evidence": "（合成）想躺平又怕真的废掉"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "巴赫",
+      "strength": 0.85,
+      "cluster": "S12",
+      "evidence": "（合成）巴赫"
+    },
+    {
+      "relation": "DISLIKES",
+      "entity": "群体合影",
+      "strength": 0.82,
+      "cluster": null,
+      "evidence": "（合成噪音）群体合影"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "在三个城市生活过",
+      "strength": 0.8,
+      "cluster": null,
+      "evidence": "（合成噪音）在三个城市生活过"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "读过研究生",
+      "strength": 0.56,
+      "cluster": null,
+      "evidence": "（合成噪音）读过研究生"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "紧凑高密度",
+      "strength": 0.87,
+      "cluster": null,
+      "evidence": "（合成风格）紧凑高密度"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "学术理性",
+      "strength": 0.65,
+      "cluster": null,
+      "evidence": "（合成风格）学术理性"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "慵懒散漫",
+      "strength": 0.6,
+      "cluster": null,
+      "evidence": "（合成风格）慵懒散漫"
+    }
+  ]
+}

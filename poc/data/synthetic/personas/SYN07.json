@@ -1,0 +1,71 @@
+{
+  "id": "SYN07",
+  "name": "杨见微",
+  "gender": "female",
+  "archetype": "低谷里的人·重组中的我",
+  "edges": [
+    {
+      "relation": "FEELS_NOW",
+      "entity": "想躺平又怕真的废掉",
+      "strength": 0.93,
+      "cluster": "S2",
+      "evidence": "（合成）想躺平又怕真的废掉"
+    },
+    {
+      "relation": "DISLIKES",
+      "entity": "表演式的乐观",
+      "strength": 0.81,
+      "cluster": "S9",
+      "evidence": "（合成）表演式的乐观"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "我到底是哪个版本的自己",
+      "strength": 0.88,
+      "cluster": "S3",
+      "evidence": "（合成）我到底是哪个版本的自己"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "想重新定义自己又怕推翻一切",
+      "strength": 0.86,
+      "cluster": "S3",
+      "evidence": "（合成）想重新定义自己又怕推翻一切"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "异地恋过几年",
+      "strength": 0.73,
+      "cluster": null,
+      "evidence": "（合成噪音）异地恋过几年"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "做饭",
+      "strength": 0.65,
+      "cluster": null,
+      "evidence": "（合成噪音）做饭"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "写手账",
+      "strength": 0.68,
+      "cluster": null,
+      "evidence": "（合成噪音）写手账"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "学术理性",
+      "strength": 0.62,
+      "cluster": null,
+      "evidence": "（合成风格）学术理性"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "怀旧调性",
+      "strength": 0.61,
+      "cluster": null,
+      "evidence": "（合成风格）怀旧调性"
+    }
+  ]
+}

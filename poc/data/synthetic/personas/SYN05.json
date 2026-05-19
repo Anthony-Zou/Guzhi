@@ -1,0 +1,57 @@
+{
+  "id": "SYN05",
+  "name": "陈宁谧",
+  "gender": "female",
+  "archetype": "诚实派·反鸡汤的人",
+  "edges": [
+    {
+      "relation": "DISLIKES",
+      "entity": "积极心理学话术",
+      "strength": 0.91,
+      "cluster": "S9",
+      "evidence": "（合成）积极心理学话术"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "诚实的失败也值得",
+      "strength": 0.89,
+      "cluster": "S8",
+      "evidence": "（合成）诚实的失败也值得"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "深夜散步",
+      "strength": 0.63,
+      "cluster": null,
+      "evidence": "（合成噪音）深夜散步"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "读过研究生",
+      "strength": 0.71,
+      "cluster": null,
+      "evidence": "（合成噪音）读过研究生"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "激昂热烈",
+      "strength": 0.86,
+      "cluster": null,
+      "evidence": "（合成风格）激昂热烈"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "温柔细腻",
+      "strength": 0.6,
+      "cluster": null,
+      "evidence": "（合成风格）温柔细腻"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "怀旧调性",
+      "strength": 0.82,
+      "cluster": null,
+      "evidence": "（合成风格）怀旧调性"
+    }
+  ]
+}

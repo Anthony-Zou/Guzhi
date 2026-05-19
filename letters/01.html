@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>故知通讯 · 第 01 封</title>
+<style>
+  :root {
+    --bg: #14110f;
+    --ink: #e8e2d8;
+    --ink-soft: #b8b0a3;
+    --muted: #6a6258;
+    --line: #2a241f;
+    --accent: #e0a05a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+                 -apple-system, "Source Han Serif SC", serif;
+    line-height: 1.95;
+    font-size: 17px;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  .nav-back {
+    position: fixed; top: 20px; left: 20px;
+    background: rgba(31, 27, 24, 0.92);
+    border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 12px; color: var(--ink);
+    text-decoration: none; z-index: 100;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .nav-back:hover {
+    border-color: var(--accent);
+    background: rgba(50, 42, 36, 0.95);
+  }
+
+  article {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 120px 28px 120px;
+  }
+
+  .masthead {
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--muted);
+    margin-bottom: 64px;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 400;
+    line-height: 1.35;
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+  }
+  h1 .number {
+    color: var(--accent);
+    font-style: italic;
+  }
+  .meta {
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 32px;
+    margin-bottom: 48px;
+  }
+
+  p {
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+  }
+  p strong { color: var(--ink); font-weight: 500; }
+  p em { color: var(--accent); font-style: normal; }
+
+  h3.section-head {
+    color: var(--ink);
+    font-size: 17px;
+    font-weight: 500;
+    margin: 36px 0 16px;
+    letter-spacing: 0.02em;
+  }
+
+  blockquote {
+    border-left: 2px solid var(--accent);
+    padding: 4px 24px;
+    margin: 32px 0;
+    color: var(--ink);
+    font-style: italic;
+    font-size: 16px;
+  }
+  blockquote p { color: var(--ink); margin-bottom: 8px; }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 56px 0;
+  }
+
+  .sig {
+    color: var(--accent);
+    margin-top: 48px;
+    margin-bottom: 16px;
+  }
+
+  /* "这周改了什么" 块 */
+  .changelog {
+    margin-top: 56px;
+    padding: 28px 28px 8px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #1a1714;
+  }
+  .changelog .label {
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+  .changelog ul {
+    list-style: none;
+    padding: 0;
+  }
+  .changelog li {
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.8;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+  .changelog li:last-child { border-bottom: none; }
+  .changelog li strong { color: var(--ink); font-weight: 500; }
+  .changelog .footnote {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+
+  .ps {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px dashed var(--line);
+  }
+
+  .subscribe {
+    margin-top: 80px;
+    padding: 32px 28px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #1a1714;
+    text-align: center;
+  }
+  .subscribe .label {
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .subscribe .heading {
+    font-size: 20px;
+    color: var(--ink);
+    font-weight: 400;
+    margin-bottom: 20px;
+    letter-spacing: 0.02em;
+  }
+  .subscribe .heading em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .subscribe a {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--bg);
+    padding: 12px 28px;
+    border-radius: 4px;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    text-decoration: none;
+    transition: background 0.3s;
+  }
+  .subscribe a:hover { background: #c98a4e; }
+</style>
+</head>
+<body>
+
+<a class="nav-back" href="../landing.html">← 返回 故知</a>
+
+<article>
+  <div class="masthead">故 知 通 讯 · 第 0 1 封</div>
+
+  <h1>算了一笔账，发现这事可能<span class="number">跑得通</span></h1>
+  <div class="meta">第 二 封 · 2 0 2 6 春</div>
+
+  <p>上一封信发出去之后，有个朋友看完跟我说：</p>
+
+  <blockquote>
+    <p>"故事我都听懂了。但你这种 agent-driven 的东西，能跑下去吗？我见过太多这类产品，几千 DAU 就把账面烧穿了。"</p>
+  </blockquote>
+
+  <p>那句话戳到我了。</p>
+
+  <p>我做了一周的事情就一件：<strong>算账</strong>。</p>
+
+  <hr>
+
+  <p>先说结论：<strong>100k DAU，月推理成本 $100k 左右</strong>。单 DAU 月成本 <em>$1</em>。</p>
+
+  <p>这数字看起来比一般 agentic social 产品低一个量级。原因不浪漫，纯粹是架构上的运气 ——</p>
+
+  <p>故知的核心匹配，<em>不烧 token</em>。</p>
+
+  <p>知识图谱匹配是图算法，不是大模型。一个人 KG 子图里有几条边，另一个人 KG 子图里有几条边，两图在哪些簇上重合、强度多深，这套是确定性运算。Python 跑，0 token。</p>
+
+  <p>只有两个地方真的要叫 AI：</p>
+
+  <p>1. 用户写下一段话 → AI 把它抽成 KG 边<br>
+     2. 匹配上的两人 → AI 写那段相遇对话</p>
+
+  <p>第一个一次性多、之后增量小。第二个只在"该叫的时候"叫。</p>
+
+  <hr>
+
+  <p>我之前的账算错过一次。</p>
+
+  <p>最早的版本里，我跟着投资人那句"几千 DAU 就能烧穿"的直觉，把 agent 在小镇里走的每一步都算成了 LLM 调用 —— 那是动辄百万次的调用量。</p>
+
+  <p>但故知<em>不是那种 agent</em>。镇上的小人是个确定性状态机，它不思考、不决策、不"想找谁聊"。它只是在走。它撞上谁，是物理事件，不是 AI 决定。</p>
+
+  <p>撞上之后，KG 匹配也是图算法。仍然不烧 token。</p>
+
+  <p>只有当算法说"这两个该聊"，AI 才被请出来 —— 写那段对话。</p>
+
+  <p>把账重新算一遍，单 DAU 月成本从 $4 掉到 $1。</p>
+
+  <hr>
+
+  <p>这周做完三件事。每一件都是为了让这个"$1/DAU"的数字不止是 Excel 里的承诺，而是代码里的事实。</p>
+
+  <h3 class="section-head">第一件：分层路由</h3>
+  <p>不同的相遇值不同的 AI。普通分相遇用 Haiku（便宜）写对话，足够了。高分相遇用 Sonnet，笔触更细腻。L3 级的灵魂时刻 —— 大概 5% 的相遇 —— 升级到 Opus。</p>
+  <p>这不是"省钱式"路由，是<em>把钱花在刀刃上</em>。Haiku 省下的钱让 Opus 在那 5% 上可以更慢、更深。</p>
+
+  <h3 class="section-head">第二件：事件驱动</h3>
+  <p>以前 narrate 是同步的，调一次 LLM 主程序等一次。现在改成事件队列：匹配产出 MeetingEvent，扔到队列里，narrate worker 异步消费。</p>
+  <p>听上去是工程细节，但意味着 worker 可以独立扩。规模化时不用整个系统等同一个慢调用。</p>
+
+  <h3 class="section-head">第三件：分层 enrich</h3>
+  <p>低档调用保持精简（300 token，只塞 seed 的两句原话）。高档调用从两人共簇里挑 3-6 条补充边塞进 prompt —— Sonnet 和 Opus 这样能看到更多"侧面"，写出来不像 Haiku 那样只抓主线。</p>
+  <p>低档便宜、高档更细。</p>
+
+  <hr>
+
+  <p>但其实我想说的不是这些技术。</p>
+
+  <p>我想说的是 —— 算完这笔账之后，我有一种<em>奇怪的轻松感</em>。</p>
+
+  <p>不是因为数字漂亮。是因为我第一次确定：<strong>这件事不是非要烧钱才能跑</strong>。</p>
+
+  <p>我以前以为，做这种 AI-heavy 的产品就得有融资、有团队、有一堆显卡。算完之后才发现：如果 KG 是确定性的、如果 AI 只在最关键的两个点出现、如果路由分层、如果在 100k DAU 之前不上那些贵的基础设施 ——</p>
+
+  <p>这事一个人也能扛。</p>
+
+  <p>我不是说一定能成。我是说，至少在<em>被钱掐死</em>这条路径上，故知有可能不死。</p>
+
+  <hr>
+
+  <p>下一封信会写什么我还不知道。可能是"waitlist 到了多少人"，可能是"第一镇圈了谁、为什么是 ta 们"。</p>
+
+  <p>也可能是又一次反复推翻自己之后写的。</p>
+
+  <p class="sig">— Z</p>
+
+  <div class="changelog">
+    <div class="label">这 周 改 了 什 么</div>
+    <ul>
+      <li><strong>LLMRouter</strong>：5 个 token 调用点，每个按 call_point 路由到 Haiku / Sonnet / Opus。</li>
+      <li><strong>事件驱动</strong>：narrate 改成 EventBus + Worker。同步老路径保留。</li>
+      <li><strong>Enrich 分层</strong>：低档不增强、高档塞共簇补充边。</li>
+      <li><strong>弱养成 + 场地推荐</strong>：用户可以"投喂"内容（文章/音乐/牢骚），AI 自动抽 KG 增量；匹配成功后给一段克制的场地类型建议。</li>
+    </ul>
+    <div class="footnote">代码上 0 错误，233 个测试全绿。算账表是另一个文件，下次合适的时候放。</div>
+  </div>
+
+  <p class="ps">P.S. demo 还是那个 demo。下一次有产品变化我会专门说。</p>
+
+  <div class="subscribe">
+    <div class="label">下 一 封</div>
+    <div class="heading">想收到<em>下一封</em>？</div>
+    <a href="../landing.html#waitlist">加 入 名 单</a>
+  </div>
+</article>
+
+</body>
+</html>

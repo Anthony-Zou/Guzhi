@@ -1,0 +1,71 @@
+{
+  "id": "SYN10",
+  "name": "黄予安",
+  "gender": "male",
+  "archetype": "反内卷者·诚实派",
+  "edges": [
+    {
+      "relation": "BELIEVES",
+      "entity": "拒绝把生活外包给工作",
+      "strength": 0.7,
+      "cluster": "S5",
+      "evidence": "（合成）拒绝把生活外包给工作"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "忙不等于有用",
+      "strength": 0.74,
+      "cluster": "S5",
+      "evidence": "（合成）忙不等于有用"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "把话说清楚比说漂亮重要",
+      "strength": 0.87,
+      "cluster": "S8",
+      "evidence": "（合成）把话说清楚比说漂亮重要"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "拉赫玛尼诺夫",
+      "strength": 0.67,
+      "cluster": "S12",
+      "evidence": "（合成）拉赫玛尼诺夫"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "旧书店",
+      "strength": 0.69,
+      "cluster": null,
+      "evidence": "（合成噪音）旧书店"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "下雨天听音乐",
+      "strength": 0.52,
+      "cluster": null,
+      "evidence": "（合成噪音）下雨天听音乐"
+    },
+    {
+      "relation": "DISLIKES",
+      "entity": "电话推销",
+      "strength": 0.68,
+      "cluster": null,
+      "evidence": "（合成噪音）电话推销"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "文艺抒情",
+      "strength": 0.62,
+      "cluster": null,
+      "evidence": "（合成风格）文艺抒情"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "平静温和",
+      "strength": 0.86,
+      "cluster": null,
+      "evidence": "（合成风格）平静温和"
+    }
+  ]
+}

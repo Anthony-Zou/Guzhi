@@ -1,0 +1,13 @@
+{
+  "id": "P3",
+  "name": "沈牧",
+  "edges": [
+    {"relation": "EXPERIENCED", "entity": "数学博士在读", "strength": 0.7, "cluster": null, "evidence": "数学博士第四年"},
+    {"relation": "LIKES", "entity": "数学证明之美", "strength": 0.95, "cluster": "C5", "evidence": "一个证明能美到让你啊地叫出来"},
+    {"relation": "BELIEVES", "entity": "效率不是最高价值", "strength": 0.85, "cluster": "C2", "evidence": "无法理解为什么有人觉得效率是最高价值"},
+    {"relation": "DISLIKES", "entity": "把人简化成产出", "strength": 0.85, "cluster": "C2", "evidence": "讨厌把人简化成产出"},
+    {"relation": "BELIEVES", "entity": "慢工作有自己的逻辑", "strength": 0.8, "cluster": "C6", "evidence": "我相信慢工作有它自己的逻辑"},
+    {"relation": "SPEAKS_AS", "entity": "学术理性", "strength": 0.85, "cluster": null, "evidence": "说话偏学术"},
+    {"relation": "SPEAKS_AS", "entity": "长句", "strength": 0.7, "cluster": null, "evidence": "爱铺垫，长句"}
+  ]
+}

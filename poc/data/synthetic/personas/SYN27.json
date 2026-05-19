@@ -1,0 +1,92 @@
+{
+  "id": "SYN27",
+  "name": "孙怀瑾",
+  "gender": "male",
+  "archetype": "重组中的我·去留之间",
+  "edges": [
+    {
+      "relation": "FEELS_NOW",
+      "entity": "离职后才发现真正想要的",
+      "strength": 0.68,
+      "cluster": "S3",
+      "evidence": "（合成）离职后才发现真正想要的"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "换了环境我还是我吗",
+      "strength": 0.65,
+      "cluster": "S3",
+      "evidence": "（合成）换了环境我还是我吗"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "忙不等于有用",
+      "strength": 0.78,
+      "cluster": "S5",
+      "evidence": "（合成）忙不等于有用"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "时间不该全用来变现",
+      "strength": 0.71,
+      "cluster": "S5",
+      "evidence": "（合成）时间不该全用来变现"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "回去算不算认输",
+      "strength": 0.93,
+      "cluster": "S1",
+      "evidence": "（合成）回去算不算认输"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "侯孝贤",
+      "strength": 0.77,
+      "cluster": "S10",
+      "evidence": "（合成）侯孝贤"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "毕赣",
+      "strength": 0.67,
+      "cluster": "S10",
+      "evidence": "（合成）毕赣"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "写手账",
+      "strength": 0.55,
+      "cluster": null,
+      "evidence": "（合成噪音）写手账"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "换过两次行业",
+      "strength": 0.7,
+      "cluster": null,
+      "evidence": "（合成噪音）换过两次行业"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "独自旅行过",
+      "strength": 0.61,
+      "cluster": null,
+      "evidence": "（合成噪音）独自旅行过"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "文艺抒情",
+      "strength": 0.83,
+      "cluster": null,
+      "evidence": "（合成风格）文艺抒情"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "激昂热烈",
+      "strength": 0.78,
+      "cluster": null,
+      "evidence": "（合成风格）激昂热烈"
+    }
+  ]
+}

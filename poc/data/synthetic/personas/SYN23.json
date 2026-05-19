@@ -1,0 +1,64 @@
+{
+  "id": "SYN23",
+  "name": "高因之",
+  "gender": "female",
+  "archetype": "诚实派·反内卷者",
+  "edges": [
+    {
+      "relation": "BELIEVES",
+      "entity": "诚实的失败也值得",
+      "strength": 0.88,
+      "cluster": "S8",
+      "evidence": "（合成）诚实的失败也值得"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "宁可难听也要真话",
+      "strength": 0.7,
+      "cluster": "S8",
+      "evidence": "（合成）宁可难听也要真话"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "效率不是最高价值",
+      "strength": 0.93,
+      "cluster": "S5",
+      "evidence": "（合成）效率不是最高价值"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "人不该被KPI量化",
+      "strength": 0.82,
+      "cluster": "S5",
+      "evidence": "（合成）人不该被KPI量化"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "做饭",
+      "strength": 0.57,
+      "cluster": null,
+      "evidence": "（合成噪音）做饭"
+    },
+    {
+      "relation": "DISLIKES",
+      "entity": "早起",
+      "strength": 0.71,
+      "cluster": null,
+      "evidence": "（合成噪音）早起"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "文艺抒情",
+      "strength": 0.83,
+      "cluster": null,
+      "evidence": "（合成风格）文艺抒情"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "具象画面",
+      "strength": 0.86,
+      "cluster": null,
+      "evidence": "（合成风格）具象画面"
+    }
+  ]
+}

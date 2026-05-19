@@ -1,0 +1,71 @@
+{
+  "id": "SYN04",
+  "name": "李南乔",
+  "gender": "female",
+  "archetype": "去留之间·形式之美的信徒",
+  "edges": [
+    {
+      "relation": "FEELS_NOW",
+      "entity": "回去算不算认输",
+      "strength": 0.71,
+      "cluster": "S1",
+      "evidence": "（合成）回去算不算认输"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "留下还是离开",
+      "strength": 0.93,
+      "cluster": "S1",
+      "evidence": "（合成）留下还是离开"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "克制的设计最美",
+      "strength": 0.77,
+      "cluster": "S6",
+      "evidence": "（合成）克制的设计最美"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "好东西不需要解释",
+      "strength": 0.92,
+      "cluster": "S6",
+      "evidence": "（合成）好东西不需要解释"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "独自旅行过",
+      "strength": 0.55,
+      "cluster": null,
+      "evidence": "（合成噪音）独自旅行过"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "参与过社会公益活动",
+      "strength": 0.76,
+      "cluster": null,
+      "evidence": "（合成噪音）参与过社会公益活动"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "具象画面",
+      "strength": 0.87,
+      "cluster": null,
+      "evidence": "（合成风格）具象画面"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "平静温和",
+      "strength": 0.72,
+      "cluster": null,
+      "evidence": "（合成风格）平静温和"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "慵懒散漫",
+      "strength": 0.67,
+      "cluster": null,
+      "evidence": "（合成风格）慵懒散漫"
+    }
+  ]
+}

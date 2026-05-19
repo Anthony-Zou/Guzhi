@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>故知小镇 · 回放</title>
+<style>
+  :root {
+    --bg: #14110f;
+    --panel: #1f1b18;
+    --ink: #e8e2d8;
+    --muted: #8a8178;
+    --line: #3a342e;
+    --grass: #1f2a1b;
+    --grass2: #243023;
+    --L3: #e0a05a;   /* 暖橙 */
+    --L2: #7fa68a;   /* 青苔 */
+    --L1: #6b8caf;   /* 雾蓝 */
+    --skin: #d6b18a;
+    --pink: #c98a9b;
+    --blue: #6b8caf;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    overflow: hidden; height: 100vh;
+  }
+  #app { display: flex; height: 100vh; }
+  #stage { flex: 1; position: relative; display: flex;
+           align-items: center; justify-content: center; }
+  #stage svg {
+    width: 100%; height: 100%;
+    image-rendering: pixelated; image-rendering: crisp-edges;
+  }
+  /* 高亮人物名片 —— 左上角浮层 */
+  #card {
+    /* 右栏内的独立格子，不再悬浮 */
+    background: #18140f;
+    border: 1px solid var(--line); border-radius: 6px;
+    padding: 14px 16px;
+    margin: 0 18px 12px;
+    display: none;            /* 没选人时不占位 */
+    position: relative;
+    font-size: 12px; line-height: 1.6;
+  }
+  #card.show { display: block; }
+  #card .name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  #card .meta { color: var(--muted); font-size: 11px; margin-bottom: 8px; }
+  #card .edges { margin-bottom: 8px; }
+  #card .edge-line { font-size: 11px; color: #c8c2b6; }
+  #card .edge-line .rel { color: var(--muted); }
+  #card .progress {
+    border-top: 1px solid var(--line); padding-top: 8px; margin-top: 8px;
+  }
+  #card .progress .label { color: var(--muted); font-size: 11px; }
+  #card .progress .num { font-size: 14px; font-weight: 600; color: var(--L3); }
+  #card .close-card {
+    position: absolute; top: 6px; right: 10px; cursor: pointer;
+    color: var(--muted); font-size: 14px;
+  }
+  #card .close-card:hover { color: var(--ink); }
+  #card .shuffle-card {
+    position: absolute; top: 6px; right: 36px; cursor: pointer;
+    color: var(--muted); font-size: 14px;
+    transition: color 0.2s, transform 0.4s;
+  }
+  #card .shuffle-card:hover {
+    color: var(--L3);
+    transform: rotate(180deg);
+  }
+
+  /* hover tooltip —— 鼠标停在小人上时显示 */
+  #tip {
+    position: fixed; pointer-events: none;
+    background: rgba(20, 17, 15, 0.97);
+    border: 1px solid var(--L3); border-radius: 6px;
+    padding: 8px 10px; font-size: 11px; line-height: 1.6;
+    z-index: 999; display: none;
+    max-width: 320px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  }
+  #tip.show { display: block; }
+  #tip .tip-name { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 3px; }
+  #tip .tip-archetype { color: var(--muted); font-size: 10px; margin-bottom: 6px; }
+  #tip .tip-line { color: var(--L3); }
+
+  /* 开场覆盖层 —— 用户点"进入"才开始播 */
+  #intro-overlay {
+    position: fixed; inset: 0;
+    background: rgba(20, 17, 15, 0.94);
+    backdrop-filter: blur(8px);
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+    transition: opacity 0.6s ease;
+  }
+  #intro-overlay.fade-out {
+    opacity: 0;
+    pointer-events: none;
+  }
+  #intro-card {
+    max-width: 480px;
+    text-align: center;
+  }
+  #intro-card .intro-brand {
+    font-size: 11px;
+    letter-spacing: 0.5em;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+  #intro-card .intro-title {
+    font-size: clamp(22px, 3vw, 32px);
+    color: var(--ink);
+    font-weight: 300;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    margin-bottom: 16px;
+  }
+  #intro-card .intro-title em {
+    font-style: normal;
+    color: var(--L3);
+  }
+  #intro-card .intro-sub {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.85;
+    margin-bottom: 32px;
+  }
+  #intro-card .intro-key {
+    color: var(--L3);
+  }
+  #intro-card .intro-rules {
+    background: rgba(20, 17, 15, 0.6);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 32px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.9;
+    text-align: left;
+  }
+  #intro-card .intro-rules .rule {
+    color: var(--muted);
+  }
+  #intro-card .intro-rules .rule b {
+    color: var(--L3);
+    font-weight: 500;
+    margin-right: 6px;
+  }
+  #enter-btn {
+    background: var(--L3);
+    color: #14110f;
+    border: none;
+    padding: 14px 36px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.3s, transform 0.3s;
+  }
+  #enter-btn:hover {
+    background: #c98a4e;
+    transform: translateY(-1px);
+  }
+
+  /* 结束覆盖层 —— tick 跑完后浮现 */
+  #ending-overlay {
+    position: fixed; inset: 0;
+    background: rgba(20, 17, 15, 0.96);
+    backdrop-filter: blur(10px);
+    z-index: 9100;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 56px 28px;
+    overflow-y: auto;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+  #ending-overlay.show { display: flex; }
+  #ending-overlay.visible { opacity: 1; }
+  #ending-card {
+    max-width: 640px;
+    width: 100%;
+    text-align: center;
+    margin: auto;
+  }
+  /* 嵌在结算页里的那场相遇（KG 对比 + 故事种子） */
+  #ending-meeting {
+    text-align: left;
+    margin: 28px 0 36px;
+    padding: 20px 22px;
+    background: rgba(26, 22, 18, 0.7);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+  #ending-meeting .em-head {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  #ending-meeting .em-pair {
+    text-align: center;
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  #ending-meeting .em-score {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  #ending-meeting .em-score b { color: var(--L3); font-weight: 500; }
+  #ending-meeting .em-clusters {
+    margin-bottom: 14px;
+  }
+  #ending-meeting .em-cluster {
+    padding: 8px 12px;
+    margin: 4px 0;
+    border-radius: 3px;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+  #ending-meeting .em-cluster .name {
+    font-weight: 600;
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+  #ending-meeting .em-sides {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  #ending-meeting .em-side {
+    flex: 1;
+    min-width: 0;
+  }
+  #ending-meeting .em-side .who {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+  #ending-meeting .em-side .arch {
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  #ending-meeting .em-edge {
+    padding: 3px 7px;
+    margin: 2px 0;
+    border-radius: 3px;
+    font-size: 10.5px;
+    line-height: 1.5;
+  }
+  #ending-meeting .em-edge .rel {
+    color: var(--muted);
+    font-size: 9.5px;
+    margin-right: 4px;
+  }
+  #ending-meeting .em-edge .cid {
+    font-size: 9.5px;
+    margin-left: 4px;
+  }
+  #ending-meeting .em-seed {
+    background: rgba(224, 160, 90, 0.08);
+    border-left: 2px solid var(--L3);
+    padding: 10px 12px;
+    border-radius: 3px;
+    font-size: 11px;
+    color: var(--ink);
+    line-height: 1.7;
+  }
+  #ending-meeting .em-seed b {
+    color: var(--L3);
+    font-weight: 500;
+    font-size: 10.5px;
+    letter-spacing: 0.15em;
+  }
+  #ending-card .ending-brand {
+    font-size: 11px;
+    letter-spacing: 0.5em;
+    color: var(--muted);
+    margin-bottom: 36px;
+  }
+  #ending-card .ending-stat {
+    font-size: clamp(20px, 2.6vw, 26px);
+    color: var(--ink);
+    font-weight: 300;
+    line-height: 1.7;
+    letter-spacing: 0.04em;
+    margin-bottom: 16px;
+  }
+  #ending-card .ending-stat em {
+    font-style: normal;
+    color: var(--L3);
+    font-weight: 500;
+  }
+  #ending-card .ending-poetry {
+    font-size: clamp(15px, 1.8vw, 18px);
+    color: var(--ink-soft, #b8b0a3);
+    font-style: italic;
+    line-height: 1.85;
+    margin: 32px 0 48px;
+    letter-spacing: 0.05em;
+  }
+  #ending-card .ending-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .ending-btn {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    padding: 14px 26px;
+    border-radius: 4px;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    font-family: inherit;
+    text-decoration: none;
+    transition: border-color 0.3s, background 0.3s, transform 0.3s;
+  }
+  .ending-btn:hover {
+    border-color: var(--L3);
+    background: rgba(50, 42, 36, 0.9);
+    transform: translateY(-1px);
+  }
+  .ending-btn.primary {
+    background: var(--L3);
+    color: #14110f;
+    border-color: var(--L3);
+  }
+  .ending-btn.primary:hover {
+    background: #c98a4e;
+    border-color: #c98a4e;
+  }
+
+  #panel {
+    width: 360px; background: var(--panel); border-left: 1px solid var(--line);
+    display: flex; flex-direction: column;
+  }
+  #panel header {
+    padding: 16px 18px; border-bottom: 1px solid var(--line);
+  }
+  #panel header h1 { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+  #panel header .sub { font-size: 11px; color: var(--muted); }
+  .mode-btn {
+    background: #2a241f; border: 1px solid var(--line); color: var(--muted);
+    padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 11px;
+    flex: 1;
+  }
+  .mode-btn:hover { color: var(--ink); }
+  .mode-btn.active {
+    background: #3a2e22; color: var(--L3); border-color: var(--L3);
+  }
+  #stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    padding: 14px 18px; border-bottom: 1px solid var(--line);
+  }
+  #stats .s {
+    background: #18140f; border: 1px solid var(--line);
+    border-radius: 5px; padding: 6px 8px;
+  }
+  #stats .v { font-size: 17px; font-weight: 600; }
+  #stats .k { font-size: 10px; color: var(--muted); }
+
+  /* 时间轴 */
+  #timeline {
+    padding: 12px 18px; border-bottom: 1px solid var(--line);
+  }
+  #controls { display: flex; gap: 8px; align-items: center; }
+  #controls button {
+    background: #2a241f; border: 1px solid var(--line); color: var(--ink);
+    padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px;
+  }
+  #controls button:hover { background: #322b25; }
+  #controls .tick { margin-left: auto; color: var(--muted); font-size: 11px; }
+  #scrubber {
+    width: 100%; margin-top: 8px;
+    appearance: none; height: 6px; background: var(--line); border-radius: 3px;
+    outline: none;
+  }
+  #scrubber::-webkit-slider-thumb {
+    appearance: none; width: 12px; height: 12px; border-radius: 50%;
+    background: var(--L3); cursor: pointer;
+  }
+  #speed {
+    background: #2a241f; border: 1px solid var(--line); color: var(--ink);
+    padding: 2px 6px; border-radius: 4px; font-size: 11px;
+  }
+
+  /* 事件流 */
+  #events { flex: 1; overflow-y: auto; padding: 12px 18px; }
+  #events .title { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+  .event {
+    padding: 8px 10px; margin-bottom: 6px;
+    background: #18140f; border: 1px solid var(--line);
+    border-radius: 5px; font-size: 12px; cursor: pointer;
+  }
+  .event:hover { border-color: var(--ink); }
+  .event.matched { border-left: 3px solid var(--L3); }
+  .event.unmatched { opacity: 0.55; }
+  .event .t { color: var(--muted); font-size: 10px; }
+  .event .pair { font-weight: 600; margin: 2px 0; }
+  .event .meta { color: var(--muted); font-size: 10px; }
+
+  /* 详情弹层（点 event 后展开） */
+  #detail-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.7);
+    display: none; align-items: center; justify-content: center; z-index: 10;
+  }
+  #detail-overlay.show { display: flex; }
+  #detail-box {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 8px; padding: 24px;
+    width: 700px; max-width: 90vw; max-height: 85vh; overflow-y: auto;
+  }
+  #detail-box h2 { font-size: 16px; margin-bottom: 10px; }
+  #detail-box .seed-block {
+    background: #18140f; border: 1px solid var(--line);
+    border-radius: 6px; padding: 12px; margin: 10px 0;
+    white-space: pre-wrap; font-size: 12px; line-height: 1.7;
+  }
+  #detail-box .narration {
+    background: #18140f; border: 1px solid var(--line);
+    border-radius: 6px; padding: 12px; margin: 10px 0;
+    white-space: pre-wrap; font-size: 12px; line-height: 1.8;
+    color: #d8d3c8;
+  }
+  #close { float: right; cursor: pointer; color: var(--muted); }
+  #close:hover { color: var(--ink); }
+  .tag {
+    display: inline-block; padding: 1px 6px; border-radius: 3px;
+    font-size: 10px; margin-right: 4px;
+  }
+
+  /* 导航：返回 landing */
+  .nav-back {
+    position: fixed;
+    top: 20px; left: 20px;
+    background: rgba(31, 27, 24, 0.92);
+    border: 1px solid #3a342e;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: #e8e2d8;
+    text-decoration: none;
+    z-index: 1000;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.3s, transform 0.3s, background 0.3s;
+  }
+  .nav-back:hover {
+    border-color: #e0a05a;
+    background: rgba(50, 42, 36, 0.95);
+    transform: translateY(-1px);
+  }
+  /* 语言切换按钮 —— 放右栏顶上 */
+  #lang-toggle {
+    position: fixed;
+    top: 20px; right: 380px;
+    z-index: 999;
+    display: flex;
+    background: rgba(31, 27, 24, 0.85);
+    border: 1px solid #3a342e;
+    border-radius: 4px;
+    overflow: hidden;
+    backdrop-filter: blur(6px);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+  }
+  #lang-toggle button {
+    background: transparent; border: none;
+    color: #8a8178; padding: 6px 12px;
+    font-family: inherit; cursor: pointer;
+  }
+  #lang-toggle button:hover { color: #e8e2d8; }
+  #lang-toggle button.active {
+    color: #e0a05a; background: rgba(50, 42, 36, 0.6);
+  }
+</style>
+</head>
+<body>
+<a class="nav-back" href="../../landing.html" data-i18n="nav.back">← 回 故知</a>
+<div id="lang-toggle">
+  <button data-lang="zh" class="active">中</button>
+  <button data-lang="en">EN</button>
+</div>
+
+<!-- 开场覆盖层 —— 用户点"进入"后才开始播 -->
+<div id="intro-overlay">
+  <div id="intro-card">
+    <div class="intro-brand" data-i18n="intro.brand">故 知 小 镇</div>
+    <div class="intro-title" data-i18n-html="intro.title">
+      你要跟着 <em id="intro-name"></em> 走一程，<br>
+      看她<em>遇到</em>谁、又<em>错过</em>谁。
+    </div>
+    <div class="intro-sub" data-i18n="intro.sub">
+      30 个 agent 在镇上各走各的。两个人擦近时，KG 匹配现场算。
+    </div>
+    <div class="intro-rules">
+      <div class="rule" data-i18n-html="intro.rule1"><b>·</b>暖橙虚线圈 = 她"该遇到但还没遇到"的人</div>
+      <div class="rule" data-i18n-html="intro.rule2"><b>·</b>点别的小人 → 改成跟着 ta 走</div>
+      <div class="rule" data-i18n-html="intro.rule3"><b>·</b>右栏 → 事件流、时间轴、速度</div>
+    </div>
+    <button id="enter-btn" data-i18n="intro.enter">进 镇</button>
+  </div>
+</div>
+
+<!-- 结束覆盖层 —— 跑到最后一 tick 时浮现 -->
+<div id="ending-overlay">
+  <div id="ending-card">
+    <div class="ending-brand" data-i18n="ending.brand">故 知 小 镇 · 终</div>
+    <div class="ending-stat" data-i18n-html="ending.stat1">
+      你跟着 <em id="ending-name"></em>
+      走完了一程。
+    </div>
+    <div class="ending-stat" data-i18n-html="ending.stat2">
+      她遇到了 <em id="ending-met-count">0</em> 个人，<br>
+      还有 <em id="ending-missed-count">0</em> 个，<br>
+      你们擦肩而过。
+    </div>
+
+    <!-- 她这趟唯一捡到的那场相遇（动态填充） -->
+    <div id="ending-meeting" style="display:none"></div>
+
+    <div class="ending-poetry" data-i18n-html="ending.poetry">
+      他乡遇故知 ——<br>
+      从来不是必然。
+    </div>
+    <p style="font-size:13px;color:#8a8178;line-height:1.85;margin:32px 0 24px;text-align:center" data-i18n-html="ending.invite">
+      我想拉一群真实的人，<br>
+      真跑一次匹配 —— 你愿意收到通知吗？
+    </p>
+    <div class="ending-actions">
+      <button class="ending-btn" id="restart-btn" data-i18n="ending.restart">再 跟 一 个</button>
+      <a class="ending-btn primary" href="../../landing.html#waitlist" data-i18n="ending.join">告 诉 我 你 在</a>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <div id="stage">
+    <svg id="svg" viewBox="0 0 0 0"></svg>
+    <div id="tip"></div>
+    <div id="detail-overlay">
+      <div id="detail-box">
+        <span id="close">✕</span>
+        <div id="detail-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="panel">
+    <header>
+      <h1 data-i18n="town.title">故知小镇 · 回放</h1>
+      <div class="sub" data-i18n="town.sub">30 个 agent · 谁撞上谁，KG 匹配现场算</div>
+      <div id="mode-switch" style="margin-top:10px;display:flex;gap:6px">
+        <button class="mode-btn active" data-mode="random" data-i18n="mode.random">随机游走（基线）</button>
+        <button class="mode-btn" data-mode="social" data-i18n="mode.social">社交动力学</button>
+      </div>
+    </header>
+
+    <div id="stats"></div>
+
+    <!-- 当前跟随的人物名片 —— 选了人才显示 -->
+    <div id="card">
+      <span class="shuffle-card" onclick="shuffleAgent()" title="换一个">⟲</span>
+      <span class="close-card" onclick="clearHighlight()">✕</span>
+      <div id="card-content"></div>
+    </div>
+
+    <div id="timeline">
+      <div id="controls">
+        <button id="play-btn">▶ 播放</button>
+        <select id="speed">
+          <option value="1" selected>1×</option>
+          <option value="2">2×</option>
+          <option value="4">4×</option>
+          <option value="8">8×</option>
+        </select>
+        <span class="tick" id="tick-label">tick 0 / 0</span>
+      </div>
+      <input type="range" id="scrubber" min="0" max="100" value="0">
+    </div>
+
+    <div id="events">
+      <div class="title" id="events-title">路上的事（点开看详情）</div>
+      <div id="events-list"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── 数据 ──────────────────────────────────────────────────
+const BUNDLE = /*__PAYLOAD__*/;
+const CL_COLOR = { L3: '#e0a05a', L2: '#7fa68a', L1: '#6b8caf' };
+
+let currentMode = 'random';  // 启动默认 random
+let DATA = BUNDLE[currentMode];
+
+let personaById = {};
+function rebindPersonaIndex() {
+  personaById = {};
+  DATA.personas.forEach(p => personaById[p.id] = p);
+}
+rebindPersonaIndex();
+
+// ── SVG 渲染设置 ─────────────────────────────────────────
+const CELL = 22;  // 每格 22px
+const PADDING = 16;
+const svg = document.getElementById('svg');
+const W = DATA.grid.width * CELL + PADDING * 2;
+const H = DATA.grid.height * CELL + PADDING * 2;
+svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+// ── 像素小人 SVG 生成器 ──────────────────────────────────
+// Stardew 感的简化版：头 + 衬衫 + 裤子，颜色按性别 + 深度等级
+function personaSprite(p, x, y, mode) {
+  // mode: 'main' = 主角(放大+全亮), 'lit' = 相关人(全亮), 'dim' = 无关(变暗)
+  const px = PADDING + x * CELL + CELL / 2;
+  const py = PADDING + y * CELL + CELL / 2;
+  const lvlColor = CL_COLOR[p.deepest_level] || '#666';
+  const shirt = p.gender === 'female' ? '#c98a9b' : '#6b8caf';
+  const skin = '#d6b18a';
+  const hair = '#3a2820';
+  const dim = mode === 'dim' ? 0.22 : 1;
+  const scale = mode === 'main' ? 1.5 : 1;
+
+  // 主角脚下加一个暖橙脉冲光晕
+  const glow = mode === 'main' ? `
+    <circle cx="${px}" cy="${py + 4}" r="${CELL * 0.9}"
+      fill="none" stroke="#e0a05a" stroke-width="1.5" opacity="0.55">
+      <animate attributeName="r" values="${CELL*0.7};${CELL*1.05};${CELL*0.7}"
+        dur="2.2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.7;0.2;0.7"
+        dur="2.2s" repeatCount="indefinite"/>
+    </circle>` : '';
+
+  // 14×14 像素小人，主角放大 1.5x
+  // transform：先 translate 到位置，再 scale
+  return `${glow}<g transform="translate(${px},${py-7}) scale(${scale}) translate(-7,-2)" opacity="${dim}">
+    <!-- 头发 -->
+    <rect x="3" y="0" width="8" height="2" fill="${hair}"/>
+    <rect x="2" y="1" width="10" height="3" fill="${hair}"/>
+    <!-- 脸 -->
+    <rect x="4" y="3" width="6" height="3" fill="${skin}"/>
+    <!-- 眼睛 -->
+    <rect x="5" y="4" width="1" height="1" fill="#14110f"/>
+    <rect x="8" y="4" width="1" height="1" fill="#14110f"/>
+    <!-- 衬衫 + 深度色滚边（L3 暖橙、L2 青苔、L1 雾蓝） -->
+    <rect x="3" y="6" width="8" height="5" fill="${shirt}"/>
+    <rect x="3" y="6" width="8" height="1" fill="${lvlColor}"/>
+    <!-- 手臂 -->
+    <rect x="1" y="7" width="2" height="3" fill="${shirt}"/>
+    <rect x="11" y="7" width="2" height="3" fill="${shirt}"/>
+    <!-- 裤子 -->
+    <rect x="4" y="11" width="6" height="3" fill="#2a241f"/>
+    <rect x="4" y="14" width="2" height="2" fill="#2a241f"/>
+    <rect x="8" y="14" width="2" height="2" fill="#2a241f"/>
+  </g>`;
+}
+
+// ── 镇地图（背景）────────────────────────────────────────
+// 设计：优先用 town_background.png 作为底图（你 AI 生成后处理过的）；
+// 图不存在时 fallback 到抽象风。然后在背景上叠一层暖橙 radial
+// 让中央能透光，衬托主角脉冲。最后整图 vignette 收边。
+function townBackground() {
+  const W = DATA.grid.width, H = DATA.grid.height;
+  const cx = Math.floor(W / 2), cy = Math.floor(H / 2);
+  const fullW = PADDING*2 + W*CELL;
+  const fullH = PADDING*2 + H*CELL;
+  const plazaCX = PADDING + cx*CELL + CELL/2;
+  const plazaCY = PADDING + cy*CELL + CELL/2;
+  let s = '';
+
+  // 公用渐变定义
+  // 注：背景图自带强 vignette + 中央褐色广场，所以代码层的 vignette
+  // 降到 0.3，glow 提到 0.16 让主角脉冲在褐色广场上更跳。
+  s += `<defs>
+    <radialGradient id="plaza-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e0a05a" stop-opacity="0.16"/>
+      <stop offset="55%" stop-color="#e0a05a" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#e0a05a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="plaza-dim" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#221d18" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#181613" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="50%" cy="50%" r="75%">
+      <stop offset="60%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.30"/>
+    </radialGradient>
+  </defs>`;
+
+  // 1. 底色 (兜底，背景图加载前先有色)
+  s += `<rect x="0" y="0" width="${fullW}" height="${fullH}"
+        fill="#181613"/>`;
+
+  // 2. 背景图（如果加载失败，下面的抽象风层兜底）
+  //    onerror 把图本身藏起来，露出抽象风
+  //    opacity 1.0：原图本身已经够暗，不再压淡
+  s += `<image href="town_background.png" x="0" y="0"
+        width="${fullW}" height="${fullH}"
+        preserveAspectRatio="xMidYMid slice"
+        opacity="1.0"
+        onerror="this.style.display='none'"/>`;
+
+  // 3. 抽象兜底层 —— 图没加载时露出来：中央暗圆 + 极弱网格点
+  //    背景图正常加载时，这层被图覆盖（其实图 opacity 0.88 也会让它隐约透出，
+  //    这是好事，让画面统一调子）
+  s += `<g id="abstract-fallback" opacity="0.4">`;
+  s += `<circle cx="${plazaCX}" cy="${plazaCY}" r="${CELL * 6}"
+        fill="url(#plaza-dim)"/>`;
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      const px = PADDING + x*CELL + CELL/2;
+      const py = PADDING + y*CELL + CELL/2;
+      s += `<circle cx="${px}" cy="${py}" r="0.5"
+            fill="#3a342e" opacity="0.4"/>`;
+    }
+  }
+  s += `</g>`;
+
+  // 4. 中央暖橙 glow —— 让广场区微微发暖光，衬托主角脉冲
+  s += `<circle cx="${plazaCX}" cy="${plazaCY}" r="${CELL * 8}"
+        fill="url(#plaza-glow)" pointer-events="none"/>`;
+
+  // 5. 边缘 vignette —— 把视线收向中央
+  s += `<rect x="0" y="0" width="${fullW}" height="${fullH}"
+        fill="url(#vignette)" pointer-events="none"/>`;
+
+  return s;
+}
+
+// ── 渲染一个 tick ────────────────────────────────────────
+let highlightedId = null;
+let currentTick = 0;
+
+// 计算高亮人物到当前 tick 为止"已遇到的人" 和"该遇但还没遇到"
+function highlightContext() {
+  if (!highlightedId) return null;
+  const me = personaById[highlightedId];
+  // 已发生事件里出现过 highlightedId 的另一方
+  const metIds = new Set();
+  for (const e of DATA.events) {
+    if (e.tick > currentTick) break;   // 只算已发生
+    if (e.a_id === highlightedId) metIds.add(e.b_id);
+    else if (e.b_id === highlightedId) metIds.add(e.a_id);
+  }
+  // 该匹配但还没遇到的（潜在故知）
+  const potential = (me.potential_matches || []).filter(
+    m => !metIds.has(m.with_id));
+  return { me, metIds, potential };
+}
+
+function clearHighlight() {
+  highlightedId = null;
+  document.getElementById('card').classList.remove('show');
+  renderTick(currentTick);
+}
+window.clearHighlight = clearHighlight;
+
+// ── hover tooltip ────────────────────────────────────────
+const tipEl = document.getElementById('tip');
+function showTip(pid, evt) {
+  const p = personaById[pid];
+  if (!p) return;
+  const genderMark = p.gender === 'male' ? '♂' : p.gender === 'female' ? '♀' : '';
+  const genderColor = p.gender === 'male' ? '#6b8caf' : '#c98a9b';
+  tipEl.innerHTML = `
+    <div class="tip-name">${p.name}
+      <span style="color:${genderColor}">${genderMark}</span></div>
+    <div class="tip-archetype">${p.archetype || ''}</div>
+    <div class="tip-line">${p.one_liner || ''}</div>
+  `;
+  tipEl.classList.add('show');
+  moveTip(evt);
+}
+function moveTip(evt) {
+  // fixed 定位 —— 直接用 viewport 坐标
+  let x = evt.clientX + 14;
+  let y = evt.clientY + 14;
+  // 防止跑出右边/下边屏幕
+  const rect = tipEl.getBoundingClientRect();
+  if (x + rect.width > window.innerWidth) x = evt.clientX - rect.width - 10;
+  if (y + rect.height > window.innerHeight) y = evt.clientY - rect.height - 10;
+  tipEl.style.left = x + 'px';
+  tipEl.style.top = y + 'px';
+}
+function hideTip() {
+  tipEl.classList.remove('show');
+}
+
+function renderTick(tickIdx) {
+  currentTick = tickIdx;
+  const tickData = DATA.ticks[tickIdx];
+  const evts = tickData.events || [];
+
+  // 背景 + 人物
+  let body = townBackground();
+
+  // 把高亮人物的轨迹画出来（前后各 10 ticks）
+  if (highlightedId) {
+    const trail = [];
+    const start = Math.max(0, tickIdx - 30);
+    for (let t = start; t <= tickIdx; t++) {
+      const pos = DATA.ticks[t].positions[highlightedId];
+      if (pos) trail.push(pos);
+    }
+    let path = '';
+    trail.forEach((p, i) => {
+      const x = PADDING + p[0]*CELL + CELL/2;
+      const y = PADDING + p[1]*CELL + CELL/2;
+      path += (i === 0 ? 'M' : 'L') + `${x} ${y} `;
+    });
+    body += `<path d="${path}" stroke="#e0a05a" stroke-width="1.5"
+                    fill="none" stroke-dasharray="2 3" opacity="0.5"/>`;
+  }
+
+  // 相遇连线（当前 tick 的 events）
+  evts.forEach(e => {
+    if (!e.matched) return;
+    const x1 = PADDING + e.a_pos[0]*CELL + CELL/2;
+    const y1 = PADDING + e.a_pos[1]*CELL + CELL/2;
+    const x2 = PADDING + e.b_pos[0]*CELL + CELL/2;
+    const y2 = PADDING + e.b_pos[1]*CELL + CELL/2;
+    body += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
+                    stroke="#e0a05a" stroke-width="2" opacity="0.9"/>`;
+    // 头顶气泡
+    const bx = (x1 + x2) / 2;
+    const by = Math.min(y1, y2) - 14;
+    body += `<g><rect x="${bx-32}" y="${by-8}" width="64" height="12" rx="3"
+                    fill="#1f1b18" stroke="#e0a05a"/>`;
+    body += `<text x="${bx}" y="${by+1}" text-anchor="middle"
+                    fill="#e0a05a" font-size="9">${e.shared_clusters.join(' ')}</text></g>`;
+  });
+
+  // 计算高亮上下文（已遇见、潜在故知）
+  const ctx = highlightContext();
+  const potentialMap = new Map();   // pid -> score
+  if (ctx) {
+    ctx.potential.forEach(m => potentialMap.set(m.with_id, m.score));
+  }
+
+  // 先画"潜在故知"的虚线圈（在 agent 下方）
+  if (ctx) {
+    ctx.potential.forEach(m => {
+      const pos = tickData.positions[m.with_id];
+      if (!pos) return;
+      const cx = PADDING + pos[0]*CELL + CELL/2;
+      const cy = PADDING + pos[1]*CELL + CELL/2;
+      // 虚线圈，色按 score 强度（深暖橙=高分）
+      body += `<circle cx="${cx}" cy="${cy}" r="${CELL*0.7}"
+                fill="none" stroke="#e0a05a" stroke-width="1.2"
+                stroke-dasharray="3 2" opacity="0.7"/>`;
+    });
+  }
+
+  // 所有 agent
+  DATA.personas.forEach(p => {
+    const pos = tickData.positions[p.id];
+    if (!pos) return;
+    // 不高亮模式 -> 全亮
+    // 高亮模式 -> 高亮她自己(亮); 已遇见的(中); 潜在故知(中-暖橙边); 其他(淡)
+    // 三态：'main' 主角 / 'lit' 相关人 / 'dim' 无关
+    let mode = 'lit';
+    if (highlightedId) {
+      if (p.id === highlightedId) mode = 'main';
+      else if (ctx.metIds.has(p.id) || potentialMap.has(p.id)) mode = 'lit';
+      else mode = 'dim';
+    }
+    body += `<g style="cursor:pointer" data-pid="${p.id}">
+              ${personaSprite(p, pos[0], pos[1], mode)}`;
+
+    // 名字：主角始终显示且字号更大；潜在故知/已遇见显示
+    if (highlightedId &&
+        (p.id === highlightedId
+         || potentialMap.has(p.id)
+         || ctx.metIds.has(p.id))) {
+      const tx = PADDING + pos[0]*CELL + CELL/2;
+      // 主角因为 sprite 放大了，名字位置要往下让一点
+      const isMain = p.id === highlightedId;
+      const ty = PADDING + pos[1]*CELL + CELL + (isMain ? 14 : 8);
+      let color = '#e8e2d8';
+      let fontSize = 9;
+      let fontWeight = '400';
+      if (isMain) {
+        color = '#e0a05a';
+        fontSize = 11;
+        fontWeight = '600';
+      } else if (potentialMap.has(p.id)) {
+        color = '#e0a05a';
+      } else {
+        color = '#7fa68a';
+      }
+      body += `<text x="${tx}" y="${ty}" text-anchor="middle"
+                fill="${color}" font-size="${fontSize}"
+                font-weight="${fontWeight}">${p.name}</text>`;
+    }
+    body += `</g>`;
+  });
+
+  svg.innerHTML = body;
+
+  // 绑定 agent 点击 + hover tooltip
+  svg.querySelectorAll('[data-pid]').forEach(el => {
+    const pid = el.getAttribute('data-pid');
+    el.addEventListener('click', e => {
+      highlightedId = (highlightedId === pid) ? null : pid;
+      renderTick(currentTick);
+    });
+    el.addEventListener('mouseenter', e => showTip(pid, e));
+    el.addEventListener('mousemove', e => moveTip(e));
+    el.addEventListener('mouseleave', () => hideTip());
+  });
+
+  // 更新 tick label
+  document.getElementById('tick-label').textContent =
+    `tick ${tickIdx} / ${DATA.n_ticks - 1}`;
+  document.getElementById('scrubber').value = tickIdx;
+
+  // 事件流跟着 tick 走 —— 新事件按 score 插入正确位置
+  renderEvents();
+  // 名片跟着 tick 走（"已遇到 / 该遇到"的进度会随时间更新）
+  renderCard();
+}
+
+// ── 时间轴控制 ───────────────────────────────────────────
+let playing = false;
+let speed = 1;
+let lastFrame = 0;
+
+function tickLoop(ts) {
+  if (!playing) return;
+  // 每 100ms / speed 推一个 tick
+  if (ts - lastFrame > 100 / speed) {
+    lastFrame = ts;
+    let next = currentTick + 1;
+    if (next >= DATA.n_ticks) {
+      playing = false;
+      document.getElementById('play-btn').textContent = '▶ 重播';
+      // 跑完一轮 —— 浮现结束覆盖层（给故事一个收束）
+      // 但如果用户正盯着相遇详情弹窗,不强插结算；等他关弹窗再弹
+      tryShowEndingOverlay();
+      return;
+    }
+    renderTick(next);
+  }
+  requestAnimationFrame(tickLoop);
+}
+
+// 结束覆盖层 ——————————————————————————————————————
+// 礼貌版:如果用户正在看详情弹窗,等他关了再弹结算
+let endingPending = false;
+function tryShowEndingOverlay() {
+  const detail = document.getElementById('detail-overlay');
+  if (detail && detail.classList.contains('show')) {
+    endingPending = true;   // 用户关弹窗时会触发
+    return;
+  }
+  showEndingOverlay();
+}
+function showEndingOverlay() {
+  if (!highlightedId) return;   // 没跟随人就不弹（不该发生但兜底）
+  const me = personaById[highlightedId];
+  if (!me) return;
+  // 算这一轮里 me 实际遇到了几个人 + 多少潜在故知没遇到
+  const metIds = new Set();
+  for (const e of DATA.events) {
+    if (e.a_id === highlightedId) metIds.add(e.b_id);
+    else if (e.b_id === highlightedId) metIds.add(e.a_id);
+  }
+  const totalPotential = (me.potential_matches || []).length;
+  const metPotentialCount = (me.potential_matches || [])
+    .filter(m => metIds.has(m.with_id)).length;
+  const missedCount = totalPotential - metPotentialCount;
+
+  document.getElementById('ending-name').textContent = me.name;
+  document.getElementById('ending-met-count').textContent = metPotentialCount;
+  document.getElementById('ending-missed-count').textContent = missedCount;
+
+  // 把她"真正捡到"的那场相遇嵌进结算页（按分数取最高的一场 matched event）
+  renderKeptMeeting(me);
+
+  const overlay = document.getElementById('ending-overlay');
+  overlay.classList.add('show');
+  // 下一帧加 .visible 让 transition 生效
+  requestAnimationFrame(() => overlay.classList.add('visible'));
+}
+
+// 找她这趟里最值得回看的一场 —— 当前优先策略：
+//   1) 如果用户在 demo 期间点开过某场相遇详情,沿用那场（用 lastViewedEventIdx 记）
+//   2) 否则:遇到她的、matched=true 里 score 最高的一场
+//   3) 都没有就隐藏
+function renderKeptMeeting(me) {
+  const box = document.getElementById('ending-meeting');
+  let best = null;
+  if (typeof lastViewedEventIdx === 'number' && DATA.events[lastViewedEventIdx]) {
+    const ev = DATA.events[lastViewedEventIdx];
+    if (ev.matched && (ev.a_id === me.id || ev.b_id === me.id)) {
+      best = ev;
+    }
+  }
+  if (!best) {
+    DATA.events.forEach(ev => {
+      if (!ev.matched) return;
+      if (ev.a_id !== me.id && ev.b_id !== me.id) return;
+      if (!best || ev.score > best.score) best = ev;
+    });
+  }
+  if (!best) {
+    box.style.display = 'none';
+    box.innerHTML = '';
+    return;
+  }
+  const a = personaById[best.a_id];
+  const b = personaById[best.b_id];
+  const sharedSet = new Set(best.shared_clusters);
+
+  const renderSide = (p) => {
+    const gender = p.gender === 'male' ? '♂' : p.gender === 'female' ? '♀' : '';
+    const gColor = p.gender === 'male' ? '#6b8caf' : '#c98a9b';
+    // 只展示共簇里的核心边（关键证据；非共簇的边在结算页里冗余）
+    const edges = (p.core_edges || [])
+      .filter(edge => sharedSet.has(edge.cluster))
+      .slice(0, 4)
+      .map(edge => {
+        const cl = DATA.clusters[edge.cluster];
+        const col = cl ? CL_COLOR[cl.level] : '#666';
+        return `<div class="em-edge" style="background:${col}1a;border-left:2px solid ${col}">
+          <span class="rel">${edge.relation}</span>${edge.entity}
+          <span class="cid" style="color:${col}">· ${edge.cluster} ★</span>
+        </div>`;
+      }).join('');
+    return `<div class="em-side">
+      <div class="who">${p.name} <span style="color:${gColor}">${gender}</span></div>
+      <div class="arch">${p.archetype || ''}</div>
+      ${edges || '<div style="color:var(--muted);font-size:10px">（共簇里无核心边）</div>'}
+    </div>`;
+  };
+
+  const clusters = best.shared_clusters.map(cid => {
+    const c = DATA.clusters[cid];
+    const col = CL_COLOR[c.level];
+    return `<div class="em-cluster" style="background:${col}1a;border-left:3px solid ${col}">
+      <div class="name" style="color:${col}">
+        ${cid} ${c.name} <span style="font-size:10px;color:var(--muted)">· ${c.level}</span>
+      </div>
+      <div style="color:var(--ink-soft, #b8b0a3)">${c.description || ''}</div>
+    </div>`;
+  }).join('');
+
+  const seedBlock = best.seed ? `
+    <div class="em-seed">
+      <b>${t('endingMeeting.seedLabel')}</b>
+      <span style="color:var(--muted)">${t('endingMeeting.fromCluster')}</span>
+      ${best.seed.cluster}「${best.seed.cluster_name}」<br>
+      ${a.name}：${best.seed.a_entity}<br>
+      ${b.name}：${best.seed.b_entity}
+    </div>` : '';
+
+  box.innerHTML = `
+    <div class="em-head" data-i18n="endingMeeting.head">${t('endingMeeting.head')}</div>
+    <div class="em-pair">${a.name} × ${b.name}</div>
+    <div class="em-score">${t('endingMeeting.scoreLabel')} <b>${best.score.toFixed(3)}</b>　·　tick ${best.tick}</div>
+    <div class="em-clusters">${clusters}</div>
+    <div class="em-sides">${renderSide(a)}${renderSide(b)}</div>
+    ${seedBlock}
+  `;
+  box.style.display = 'block';
+}
+// 记一下用户上次点开过的事件 idx —— 用于决定结算页带哪场过去
+let lastViewedEventIdx = null;
+
+function hideEndingOverlay() {
+  const overlay = document.getElementById('ending-overlay');
+  overlay.classList.remove('visible');
+  setTimeout(() => overlay.classList.remove('show'), 800);
+}
+
+// "再跟随一个" 按钮：随机换人 + 重头播
+document.getElementById('restart-btn').addEventListener('click', () => {
+  hideEndingOverlay();
+  lastViewedEventIdx = null;   // 换人重头播，旧的"上次看的"事件作废
+  // 复用 shuffleAgent 的加权随机选另一个人
+  shuffleAgent();
+  // 重置 tick + 自动开始
+  currentTick = 0;
+  renderTick(0);
+  playing = true;
+  document.getElementById('play-btn').textContent = '⏸ 暂停';
+  requestAnimationFrame(tickLoop);
+});
+
+document.getElementById('play-btn').addEventListener('click', () => {
+  if (currentTick >= DATA.n_ticks - 1) renderTick(0);
+  playing = !playing;
+  document.getElementById('play-btn').textContent = playing ? '⏸ 暂停' : '▶ 播放';
+  if (playing) requestAnimationFrame(tickLoop);
+});
+
+document.getElementById('speed').addEventListener('change', e => {
+  speed = parseFloat(e.target.value);
+});
+
+document.getElementById('scrubber').addEventListener('input', e => {
+  renderTick(parseInt(e.target.value));
+});
+
+// ── 高亮人物名片 ─────────────────────────────────────────
+function renderCard() {
+  const card = document.getElementById('card');
+  if (!highlightedId) {
+    card.classList.remove('show');
+    return;
+  }
+  const ctx = highlightContext();
+  if (!ctx) return;
+  const me = ctx.me;
+  const totalPotential = (me.potential_matches || []).length;
+  const metCount = (me.potential_matches || [])
+    .filter(m => ctx.metIds.has(m.with_id)).length;
+
+  const genderMark = me.gender === 'male' ? '♂' : me.gender === 'female' ? '♀' : '';
+  const genderColor = me.gender === 'male' ? '#6b8caf' : '#c98a9b';
+
+  let edgesHtml = '';
+  (me.core_edges || []).forEach(e => {
+    const cl = DATA.clusters[e.cluster];
+    const col = cl ? CL_COLOR[cl.level] : '#666';
+    edgesHtml += `<div class="edge-line">
+      <span class="rel">${e.relation}</span>
+      ${e.entity}
+      <span style="color:${col}"> · ${e.cluster}</span>
+    </div>`;
+  });
+
+  // 社交参数（在 social 模式下才真正起作用，random 模式下也显示但标注"未生效"）
+  const extr = me.extroversion;
+  const extrLabel = extr > 0.66 ? '外向' : extr > 0.33 ? '居中' : '内向';
+  const venueLabel = {center: '爱往广场聚', edge: '爱待在边缘', neutral: '哪儿都行'}[me.venue_pref];
+  const socialActive = currentMode === 'social';
+  const socialHint = socialActive
+    ? '（会影响她怎么走）'
+    : '<span style="color:#5a5048">（基线模式下不起作用）</span>';
+
+  document.getElementById('card-content').innerHTML = `
+    <div class="name">
+      ${me.name}
+      <span style="color:${genderColor}">${genderMark}</span>
+    </div>
+    <div class="meta">${me.archetype || ''}</div>
+    <div class="meta">${extrLabel}(${extr}) · ${venueLabel} ${socialHint}</div>
+    <div class="edges">${edgesHtml}</div>
+    <div class="progress">
+      <div class="label">她的潜在故知</div>
+      <div><span class="num">${metCount}</span>
+        <span style="color:var(--muted)"> / ${totalPotential} 已撞上</span>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:4px">
+        ${totalPotential - metCount > 0
+          ? '镇上暖橙虚线圈 = 她"该遇到但还没遇到"的人'
+          : '该遇到的，她都遇到了 ✓'}
+      </div>
+    </div>
+  `;
+  card.classList.add('show');
+}
+
+// ── 事件流面板（动态排序）──────────────────────────────
+// 规则：只显示已发生（tick <= currentTick）的事件；
+//      匹配上的按 score 降序在上，未匹配的按 tick 倒序在下兜底。
+//      如果有高亮人物，只显示和她相关的事件。
+function renderEvents() {
+  const list = document.getElementById('events-list');
+  const visible = [];
+  for (let i = 0; i < DATA.events.length; i++) {
+    const e = DATA.events[i];
+    if (e.tick > currentTick) continue;
+    if (highlightedId &&
+        e.a_id !== highlightedId && e.b_id !== highlightedId) continue;
+    visible.push({ idx: i, event: e });
+  }
+  // 排序：matched 先 + score 降序；unmatched 后 + tick 倒序
+  visible.sort((a, b) => {
+    if (a.event.matched !== b.event.matched) return a.event.matched ? -1 : 1;
+    if (a.event.matched) return b.event.score - a.event.score;
+    return b.event.tick - a.event.tick;
+  });
+
+  list.innerHTML = visible.map(({ idx, event: e }) => {
+    const cls = e.matched ? 'matched' : 'unmatched';
+    const result = e.matched ? `配上 · ${e.score.toFixed(3)}` : '没配上';
+    const clusters = e.shared_clusters.length
+      ? '共簇 ' + e.shared_clusters.join(', ')
+      : '无共簇';
+    return `<div class="event ${cls}" data-idx="${idx}">
+      <div class="t">tick ${e.tick}</div>
+      <div class="pair">${e.a_name} × ${e.b_name}</div>
+      <div class="meta">${result} · ${clusters}</div>
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('.event').forEach(el => {
+    el.addEventListener('click', () => {
+      const idx = parseInt(el.getAttribute('data-idx'));
+      const e = DATA.events[idx];
+      renderTick(e.tick);
+      if (e.matched) {
+        lastViewedEventIdx = idx;   // 记住用户最后看的那场，结算页带过去
+        showDetail(e);
+      }
+    });
+  });
+
+  // 标题随上下文改
+  const titleEl = document.getElementById('events-title');
+  if (highlightedId) {
+    const me = personaById[highlightedId];
+    titleEl.textContent = `${me.name} 路上的事（点开看详情）`;
+  } else {
+    titleEl.textContent = '路上的事（点开看详情）';
+  }
+}
+
+// ── 详情弹层（丰富版：双人 KG 对比 + 共簇含义） ──────────
+function showDetail(e) {
+  const a = personaById[e.a_id];
+  const b = personaById[e.b_id];
+  const sharedSet = new Set(e.shared_clusters);
+
+  // 渲染一个人的 KG 侧脸（核心边列表，共簇里的边高亮）
+  function renderPersonaSide(p) {
+    const gender = p.gender === 'male' ? '♂' : p.gender === 'female' ? '♀' : '';
+    const gColor = p.gender === 'male' ? '#6b8caf' : '#c98a9b';
+    const edges = (p.core_edges || []).map(edge => {
+      const cl = DATA.clusters[edge.cluster];
+      const colors = cl ? CL_COLOR[cl.level] : '#666';
+      const isShared = sharedSet.has(edge.cluster);
+      const bg = isShared ? `background:${colors}1a;` : '';
+      const border = isShared ? `border-left:2px solid ${colors};` : '';
+      return `<div style="${bg}${border}padding:4px 8px;margin:3px 0;border-radius:3px;font-size:11px">
+        <span style="color:var(--muted);font-size:10px">${edge.relation}</span>
+        ${edge.entity}
+        <span style="color:${colors};font-size:10px"> · ${edge.cluster}${isShared ? ' ★' : ''}</span>
+      </div>`;
+    }).join('');
+    return `
+      <div style="flex:1;min-width:0">
+        <div style="font-size:14px;font-weight:600">
+          ${p.name} <span style="color:${gColor}">${gender}</span>
+        </div>
+        <div style="color:var(--muted);font-size:11px;margin-bottom:4px">${p.archetype || ''}</div>
+        <div style="color:var(--L3);font-size:11px;margin-bottom:8px">${p.one_liner || ''}</div>
+        ${edges}
+      </div>`;
+  }
+
+  // 渲染共簇的"是什么"说明
+  function renderSharedExplanations() {
+    return e.shared_clusters.map(cid => {
+      const c = DATA.clusters[cid];
+      const col = CL_COLOR[c.level];
+      return `<div style="background:${col}1a;border-left:3px solid ${col};
+                          padding:8px 12px;margin:6px 0;border-radius:3px">
+        <div style="font-weight:600;color:${col};font-size:12px">
+          ${cid} ${c.name} <span style="font-size:10px">· ${c.level}</span>
+        </div>
+        <div style="color:var(--ink);font-size:11px;margin-top:3px;line-height:1.5">
+          ${c.description || ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const seedBlock = e.seed ? `
+    <div class="seed-block"><b>故事种子</b>
+来自簇 ${e.seed.cluster}「${e.seed.cluster_name}」
+${a.name}：${e.seed.a_entity}
+${b.name}：${e.seed.b_entity}
+故事感权重：${e.seed.weight}</div>` : '';
+  const narBlock = e.narration ? `
+    <div class="narration">${e.narration}</div>` : '';
+
+  document.getElementById('detail-content').innerHTML = `
+    <h2>${a.name} × ${b.name}（tick ${e.tick}）</h2>
+    <div>契合分：<b>${e.score.toFixed(3)}</b></div>
+
+    <h3 style="font-size:12px;color:var(--muted);margin:14px 0 6px;font-weight:normal">
+      共享的语义簇（★ 标在边上）
+    </h3>
+    ${renderSharedExplanations()}
+
+    <h3 style="font-size:12px;color:var(--muted);margin:14px 0 6px;font-weight:normal">
+      两人的 KG 侧脸（核心边，共簇里的高亮）
+    </h3>
+    <div style="display:flex;gap:12px">
+      ${renderPersonaSide(a)}
+      ${renderPersonaSide(b)}
+    </div>
+
+    ${seedBlock}
+    ${narBlock}
+    <div style="color:var(--muted);font-size:11px;margin-top:8px">
+      [这段对话由 StubNarrator 占位，换成 ClaudeNarrator 就是真正的推演]
+    </div>
+  `;
+  document.getElementById('detail-overlay').classList.add('show');
+}
+
+document.getElementById('close').addEventListener('click', () => {
+  document.getElementById('detail-overlay').classList.remove('show');
+  // 用户在等他关弹窗,关了就把结算页弹起来
+  if (endingPending) {
+    endingPending = false;
+    showEndingOverlay();
+  }
+});
+
+// ── stats 面板 ───────────────────────────────────────────
+function renderStats() {
+  const s = DATA.stats;
+  const other = BUNDLE[currentMode === 'random' ? 'social' : 'random'].stats;
+  const meetDelta = s.total_meetings - other.total_meetings;
+  const matchDelta = s.matched_meetings - other.matched_meetings;
+  const deltaStr = (n) => n > 0 ? `+${n}` : `${n}`;
+  document.getElementById('stats').innerHTML = `
+    <div class="s"><div class="v">${s.n_personas}</div><div class="k">人物</div></div>
+    <div class="s"><div class="v">${DATA.n_ticks}</div><div class="k">时间帧</div></div>
+    <div class="s"><div class="v">${s.total_meetings}</div>
+      <div class="k">相遇 <span style="color:${meetDelta>0?'#7fa68a':'#8a8178'}">(${deltaStr(meetDelta)})</span></div></div>
+    <div class="s"><div class="v" style="color:#e0a05a">${s.matched_meetings}</div>
+      <div class="k">配上的 <span style="color:${matchDelta>0?'#7fa68a':'#8a8178'}">(${deltaStr(matchDelta)})</span></div></div>
+  `;
+}
+
+// ── 模式切换 ─────────────────────────────────────────────
+function switchMode(mode) {
+  if (mode === currentMode) return;
+  currentMode = mode;
+  DATA = BUNDLE[mode];
+  rebindPersonaIndex();
+  // UI 高亮按钮
+  document.querySelectorAll('.mode-btn').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('data-mode') === mode);
+  });
+  // 切换会让 tick 数据完全换一套，重置回 tick 0
+  // 但保留高亮的 agent（如果新模式里也有他），不然重选默认
+  if (highlightedId && !personaById[highlightedId]) {
+    const def = pickDefaultAgent();
+    highlightedId = def ? def.id : null;
+  }
+  currentTick = 0;
+  document.getElementById('scrubber').max = DATA.n_ticks - 1;
+  renderStats();
+  renderTick(0);
+  // 自动继续播放（切换模式后保持流动感）
+  playing = true;
+  document.getElementById('play-btn').textContent = '⏸ 暂停';
+  requestAnimationFrame(tickLoop);
+}
+
+// 两个模式各自的技术解释
+const MODE_EXPLAIN = {
+  random: {
+    title: '随机游走（基线）',
+    body: `<b>每个 agent，每个 tick：</b><br>
+上下左右随机走一格，或者不动。<br>
+没有"想找谁聊"的意图。<br><br>
+<b>结果：</b><br>
+谁撞上谁全凭概率 —— 30 个人在 40×30 格里乱走，<br>
+本来该配的，能不能擦近，全靠运气。<br><br>
+<b>这是基线 ——</b> 用来问一个问题：<br>
+"如果一切都凭偶然，故知能让多少对的人遇到？"`,
+  },
+  social: {
+    title: '社交动力学（路线 C）',
+    body: `<b>每个 agent，每个 tick：</b><br>
+看 5 格内有谁，决定 靠近 / 走开 / 不动。<br>
+四个信号撑着这个决定：<br>
+&nbsp;1. <b>外向度</b>（每人不同）—— 高的爱往人堆里凑，低的爱躲<br>
+&nbsp;2. <b>场所偏好</b> —— 有人爱广场，有人爱边缘<br>
+&nbsp;3. <b>冷却排斥</b> —— 刚见过的人会被推开<br>
+&nbsp;4. softmax 抽样 —— 不是死选最优<br><br>
+<b>关键是：agent 看不到对方的 KG。</b><br>
+它只看"周围有几个人"，看不到"那个人和我合不合"。<br><br>
+<b>会发生什么：</b><br>
+外向的聚到广场，内向的散在边缘，<br>
+镇上自然就有了热闹区和清净区。<br>
+但 <b>配上的未必更多</b> —— 人凑得近，不等于心通得到。`,
+  },
+};
+
+document.querySelectorAll('.mode-btn').forEach(b => {
+  const mode = b.getAttribute('data-mode');
+  b.addEventListener('click', () => switchMode(mode));
+  b.addEventListener('mouseenter', e => showModeTip(mode, e));
+  b.addEventListener('mousemove', e => moveTip(e));
+  b.addEventListener('mouseleave', () => hideTip());
+});
+
+function showModeTip(mode, evt) {
+  const m = MODE_EXPLAIN[mode];
+  if (!m) return;
+  tipEl.innerHTML = `
+    <div class="tip-name">${m.title}</div>
+    <div style="font-size:11px;line-height:1.7;color:#d8d3c8">${m.body}</div>
+  `;
+  tipEl.classList.add('show');
+  moveTip(evt);
+}
+
+// ── 启动 ─────────────────────────────────────────────────
+document.getElementById('scrubber').max = DATA.n_ticks - 1;
+renderStats();
+
+// ── 初始引导 ─────────────────────────────────────────────
+// 1. 选默认高亮的 agent: 女性 + 潜在故知最多
+//    （故事叙事原因 —— "故知" 主角更适合是女性视角）
+function pickDefaultAgent(excludeId) {
+  // 先在女性里找潜在故知最多的
+  const candidates = DATA.personas.filter(p =>
+    p.gender === 'female' && p.id !== excludeId
+  );
+  if (candidates.length > 0) {
+    return candidates.reduce((best, p) => {
+      const n = (p.potential_matches || []).length;
+      const bn = best ? (best.potential_matches || []).length : -1;
+      return n > bn ? p : best;
+    }, null);
+  }
+  // 没合适的女性 -> 退回所有人里潜在故知最多
+  return DATA.personas
+    .filter(p => p.id !== excludeId)
+    .reduce((best, p) => {
+      const n = (p.potential_matches || []).length;
+      const bn = best ? (best.potential_matches || []).length : -1;
+      return n > bn ? p : best;
+    }, null);
+}
+
+// 换一个 agent —— 随机从其他人里挑
+function shuffleAgent() {
+  const others = DATA.personas.filter(p => p.id !== highlightedId);
+  if (others.length === 0) return;
+  // 加权随机：潜在故知多的更可能被选
+  const weights = others.map(p => (p.potential_matches || []).length + 1);
+  const total = weights.reduce((a, b) => a + b, 0);
+  let r = Math.random() * total;
+  let chosen = others[0];
+  for (let i = 0; i < others.length; i++) {
+    r -= weights[i];
+    if (r <= 0) { chosen = others[i]; break; }
+  }
+  highlightedId = chosen.id;
+  renderTick(currentTick);
+}
+window.shuffleAgent = shuffleAgent;
+
+// 读 URL 参数 ?follow=SYNxx —— 从匹配网络页跳过来时指定主角
+let defaultAgent = null;
+const followId = new URLSearchParams(location.search).get('follow');
+if (followId && personaById[followId]) {
+  defaultAgent = personaById[followId];
+} else {
+  defaultAgent = pickDefaultAgent();
+}
+if (defaultAgent) {
+  highlightedId = defaultAgent.id;
+  document.getElementById('intro-name').textContent = defaultAgent.name;
+}
+
+// 渲染初始帧（覆盖层下面已经画好镇子，用户点进入按钮才开始动）
+renderTick(0);
+
+// 2. 等用户点"进入小镇"按钮才开始播放
+document.getElementById('enter-btn').addEventListener('click', () => {
+  document.getElementById('intro-overlay').classList.add('fade-out');
+  playing = true;
+  document.getElementById('play-btn').textContent = '⏸ 暂停';
+  requestAnimationFrame(tickLoop);
+});
+
+// ── i18n ────────────────────────────────────────────────
+const I18N = {
+  zh: {
+    'nav.back': '← 回 故知',
+    'town.title': '故知小镇 · 回放',
+    'town.sub': '30 个 agent · 谁撞上谁，KG 匹配现场算',
+    'mode.random': '随机游走（基线）',
+    'mode.social': '社交动力学',
+    'intro.brand': '故 知 小 镇',
+    'intro.title': '你要跟着 <em id="intro-name"></em> 走一程，<br>看她<em>遇到</em>谁、又<em>错过</em>谁。',
+    'intro.sub': '30 个 agent 在镇上各走各的。两个人擦近时，KG 匹配现场算。',
+    'intro.rule1': '<b>·</b>暖橙虚线圈 = 她"该遇到但还没遇到"的人',
+    'intro.rule2': '<b>·</b>点别的小人 → 改成跟着 ta 走',
+    'intro.rule3': '<b>·</b>右栏 → 事件流、时间轴、速度',
+    'intro.enter': '进 镇',
+    'ending.brand': '故 知 小 镇 · 终',
+    'ending.stat1': '你跟着 <em id="ending-name"></em> 走完了一程。',
+    'ending.stat2': '她遇到了 <em id="ending-met-count">0</em> 个人，<br>还有 <em id="ending-missed-count">0</em> 个，<br>你们擦肩而过。',
+    'ending.poetry': '他乡遇故知 ——<br>从来不是必然。',
+    'ending.invite': '我想拉一群真实的人，<br>真跑一次匹配 —— 你愿意收到通知吗？',
+    'ending.restart': '再 跟 一 个',
+    'ending.join': '告 诉 我 你 在',
+    'endingMeeting.head': '她这趟，捡到的那场',
+    'endingMeeting.scoreLabel': '契合分',
+    'endingMeeting.seedLabel': '故事种子　',
+    'endingMeeting.fromCluster': '来自簇：',
+    'play.play': '▶ 播放',
+    'play.pause': '⏸ 暂停',
+    'play.replay': '▶ 重播',
+  },
+  en: {
+    'nav.back': '← Back',
+    'town.title': 'Guzhi Town · Replay',
+    'town.sub': '30 agents · KG-First matching runs in real-time on encounters',
+    'mode.random': 'Random Walk (baseline)',
+    'mode.social': 'Social Dynamics',
+    'intro.brand': 'G U Z H I  T O W N',
+    'intro.title': "You'll follow <em id=\"intro-name\"></em>,<br>and see who she <em>meets</em>, who she <em>misses</em>.",
+    'intro.sub': '30 agents wander the town. Encounters trigger live KG-First matching.',
+    'intro.rule1': '<b>·</b>Amber dashed circles = the people she <em>should</em> meet but hasn\'t yet',
+    'intro.rule2': '<b>·</b>Click any other figure → switch who you follow',
+    'intro.rule3': '<b>·</b>Right panel → event log, timeline, playback speed',
+    'intro.enter': 'E N T E R   T O W N',
+    'ending.brand': 'G U Z H I  T O W N · E N D',
+    'ending.stat1': 'You followed <em id="ending-name"></em> through one journey.',
+    'ending.stat2': 'She met <em id="ending-met-count">0</em> people,<br>and <em id="ending-missed-count">0</em> others —<br>you passed each other by.',
+    'ending.poetry': 'An old friend in a faraway land —<br>never a given.',
+    'ending.invite': "I'd like to try gathering a real group of people,<br>actually run a match — would you want to be told?",
+    'ending.restart': 'F O L L O W   A N O T H E R',
+    'ending.join': "T E L L  M E  Y O U ' R E  H E R E",
+    'endingMeeting.head': 'T H E  O N E  S H E  C A U G H T',
+    'endingMeeting.scoreLabel': 'fit',
+    'endingMeeting.seedLabel': 'story seed　',
+    'endingMeeting.fromCluster': 'from cluster ',
+    'play.play': '▶ Play',
+    'play.pause': '⏸ Pause',
+    'play.replay': '▶ Replay',
+  },
+};
+let currentLang = 'zh';
+function t(key) {
+  return (I18N[currentLang] && I18N[currentLang][key]) || I18N.zh[key] || key;
+}
+function applyI18n(lang) {
+  currentLang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const v = t(el.getAttribute('data-i18n'));
+    if (v) el.textContent = v;
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const v = t(el.getAttribute('data-i18n-html'));
+    if (v) el.innerHTML = v;
+  });
+  document.documentElement.setAttribute('lang', lang);
+  document.querySelectorAll('#lang-toggle button').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+  });
+  // 重新刷新动态按钮文本
+  const pb = document.getElementById('play-btn');
+  if (pb) {
+    if (currentTick >= DATA.n_ticks - 1) pb.textContent = t('play.replay');
+    else pb.textContent = playing ? t('play.pause') : t('play.play');
+  }
+  try { localStorage.setItem('guzhi_lang', lang); } catch (e) {}
+}
+document.querySelectorAll('#lang-toggle button').forEach(b => {
+  b.addEventListener('click', () => applyI18n(b.getAttribute('data-lang')));
+});
+(function initLang() {
+  let lang = 'zh';
+  try {
+    const urlLang = new URLSearchParams(location.search).get('lang');
+    if (urlLang === 'zh' || urlLang === 'en') lang = urlLang;
+    else {
+      const saved = localStorage.getItem('guzhi_lang');
+      if (saved === 'zh' || saved === 'en') lang = saved;
+      else if (!navigator.language.startsWith('zh')) lang = 'en';
+    }
+  } catch (e) {}
+  applyI18n(lang);
+})();
+</script>
+</body>
+</html>

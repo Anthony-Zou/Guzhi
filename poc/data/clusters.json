@@ -1,0 +1,23 @@
+{
+  "_comment": "语义簇定义。level: L3=存在性议题, L2=价值观, L1=偏好/品味。signal: 该簇命中归到哪类信号。",
+  "clusters": {
+    "C1": {"name": "去留之惑", "level": "L3", "signal": "feeling_resonance"},
+    "C2": {"name": "反效率主义", "level": "L2", "signal": "belief_alignment"},
+    "C3": {"name": "反正能量表演", "level": "L1", "signal": "shared_aversion"},
+    "C4": {"name": "低谷停撑", "level": "L3", "signal": "feeling_resonance"},
+    "C5": {"name": "形式之美", "level": "L2", "signal": "belief_alignment"},
+    "C6": {"name": "自我成长不靠外力", "level": "L3", "signal": "belief_alignment"},
+    "C7": {"name": "电影品味", "level": "L1", "signal": "shared_passion"},
+    "C8": {"name": "行动派反内耗", "level": "L1", "signal": "shared_passion"}
+  },
+  "tension_pairs": [
+    {"cluster": "C7", "entity_a": "野心会反噬人", "entity_b": "乱是关于宽恕",
+     "note": "同指黑泽明的乱，对立解读"}
+  ],
+  "style_complement_pairs": [
+    ["紧凑高密度", "慵懒散漫"],
+    ["锐利批判", "温柔细腻"],
+    ["抽象思辨", "具象画面"],
+    ["激昂热烈", "平静温和"]
+  ]
+}

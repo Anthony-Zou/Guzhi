@@ -1,0 +1,78 @@
+{
+  "id": "SYN16",
+  "name": "王慕之",
+  "gender": "male",
+  "archetype": "低谷里的人·反内卷者",
+  "edges": [
+    {
+      "relation": "FEELS_NOW",
+      "entity": "怎么判断是累还是病了",
+      "strength": 0.93,
+      "cluster": "S2",
+      "evidence": "（合成）怎么判断是累还是病了"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "停下来会不会就起不来了",
+      "strength": 0.68,
+      "cluster": "S2",
+      "evidence": "（合成）停下来会不会就起不来了"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "慢下来不是错",
+      "strength": 0.66,
+      "cluster": "S5",
+      "evidence": "（合成）慢下来不是错"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "人不需要一直证明自己",
+      "strength": 0.83,
+      "cluster": "S5",
+      "evidence": "（合成）人不需要一直证明自己"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "少即是多",
+      "strength": 0.83,
+      "cluster": "S6",
+      "evidence": "（合成）少即是多"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "结构之美高于装饰",
+      "strength": 0.8,
+      "cluster": "S6",
+      "evidence": "（合成）结构之美高于装饰"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "收集地图",
+      "strength": 0.59,
+      "cluster": null,
+      "evidence": "（合成噪音）收集地图"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "从稳定工作转向自由职业",
+      "strength": 0.75,
+      "cluster": null,
+      "evidence": "（合成噪音）从稳定工作转向自由职业"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "激昂热烈",
+      "strength": 0.76,
+      "cluster": null,
+      "evidence": "（合成风格）激昂热烈"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "抽象思辨",
+      "strength": 0.82,
+      "cluster": null,
+      "evidence": "（合成风格）抽象思辨"
+    }
+  ]
+}

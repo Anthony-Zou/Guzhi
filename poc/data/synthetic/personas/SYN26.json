@@ -1,0 +1,85 @@
+{
+  "id": "SYN26",
+  "name": "周知微",
+  "gender": "female",
+  "archetype": "形式之美的信徒·户外行动派",
+  "edges": [
+    {
+      "relation": "LIKES",
+      "entity": "潜水",
+      "strength": 0.75,
+      "cluster": "S11",
+      "evidence": "（合成）潜水"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "城市暴走",
+      "strength": 0.95,
+      "cluster": "S11",
+      "evidence": "（合成）城市暴走"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "杨德昌",
+      "strength": 0.73,
+      "cluster": "S10",
+      "evidence": "（合成）杨德昌"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "王家卫",
+      "strength": 0.73,
+      "cluster": "S10",
+      "evidence": "（合成）王家卫"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "克制的设计最美",
+      "strength": 0.74,
+      "cluster": "S6",
+      "evidence": "（合成）克制的设计最美"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "观察陌生人的生活",
+      "strength": 0.56,
+      "cluster": null,
+      "evidence": "（合成噪音）观察陌生人的生活"
+    },
+    {
+      "relation": "DISLIKES",
+      "entity": "排队等待",
+      "strength": 0.58,
+      "cluster": null,
+      "evidence": "（合成噪音）排队等待"
+    },
+    {
+      "relation": "DISLIKES",
+      "entity": "早起",
+      "strength": 0.67,
+      "cluster": null,
+      "evidence": "（合成噪音）早起"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "文艺抒情",
+      "strength": 0.67,
+      "cluster": null,
+      "evidence": "（合成风格）文艺抒情"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "学术理性",
+      "strength": 0.65,
+      "cluster": null,
+      "evidence": "（合成风格）学术理性"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "温柔细腻",
+      "strength": 0.6,
+      "cluster": null,
+      "evidence": "（合成风格）温柔细腻"
+    }
+  ]
+}

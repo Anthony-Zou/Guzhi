@@ -1,0 +1,14 @@
+node_modules/
+.vercel/
+.env
+.env.local
+.env.*.local
+
+# Python (POC)
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# OS
+.DS_Store

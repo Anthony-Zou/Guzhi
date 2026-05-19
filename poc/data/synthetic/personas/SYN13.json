@@ -1,0 +1,64 @@
+{
+  "id": "SYN13",
+  "name": "吴止戈",
+  "gender": "male",
+  "archetype": "诚实派·反内卷者",
+  "edges": [
+    {
+      "relation": "DISLIKES",
+      "entity": "职场正能量",
+      "strength": 0.84,
+      "cluster": "S9",
+      "evidence": "（合成）职场正能量"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "讨厌一切伪装",
+      "strength": 0.75,
+      "cluster": "S8",
+      "evidence": "（合成）讨厌一切伪装"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "把话说清楚比说漂亮重要",
+      "strength": 0.69,
+      "cluster": "S8",
+      "evidence": "（合成）把话说清楚比说漂亮重要"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "慢下来不是错",
+      "strength": 0.82,
+      "cluster": "S5",
+      "evidence": "（合成）慢下来不是错"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "忙不等于有用",
+      "strength": 0.78,
+      "cluster": "S5",
+      "evidence": "（合成）忙不等于有用"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "创业失败过一次",
+      "strength": 0.53,
+      "cluster": null,
+      "evidence": "（合成噪音）创业失败过一次"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "激昂热烈",
+      "strength": 0.85,
+      "cluster": null,
+      "evidence": "（合成风格）激昂热烈"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "冷面笑匠",
+      "strength": 0.77,
+      "cluster": null,
+      "evidence": "（合成风格）冷面笑匠"
+    }
+  ]
+}

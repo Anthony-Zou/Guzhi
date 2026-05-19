@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>故知 · KG-First 匹配可视化</title>
+<style>
+  :root {
+    --bg: #14110f;
+    --panel: #1f1b18;
+    --ink: #e8e2d8;
+    --muted: #8a8178;
+    --line: #3a342e;
+    --L3: #e0a05a;   /* 存在性议题 — 暖橙 */
+    --L2: #7fa68a;   /* 价值观 — 青苔 */
+    --L1: #6b8caf;   /* 偏好 — 雾蓝 */
+    --tp: #7fa68a;
+    --fp: #b4654a;
+    --fn: #5a5048;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    overflow: hidden; height: 100vh;
+  }
+  #app { display: flex; height: 100vh; }
+  #stage { flex: 1; position: relative; }
+  svg { width: 100%; height: 100%; display: block; }
+  .link { stroke-width: 1.2; }
+  .link.tp { stroke: var(--tp); }
+  .link.fp { stroke: var(--fp); stroke-dasharray: 4 3; }
+  .link.fn { stroke: var(--fn); stroke-dasharray: 2 4; opacity: 0.55; }
+  .link.hl { stroke-width: 3; opacity: 1; }
+  .node circle { cursor: pointer; stroke: #0c0a08; stroke-width: 1.5; }
+  .node text {
+    font-size: 10px; fill: var(--muted);
+    text-anchor: middle; pointer-events: none; user-select: none;
+  }
+  .node.hl circle { stroke: var(--ink); stroke-width: 2.5; }
+  .node.dim { opacity: 0.18; }
+  .link.dim { opacity: 0.06; }
+
+  /* 侧栏 */
+  #panel {
+    width: 340px; background: var(--panel); border-left: 1px solid var(--line);
+    padding: 20px; overflow-y: auto;
+  }
+  #panel h1 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  #panel .sub { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+  .stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    margin-bottom: 18px;
+  }
+  .stat {
+    background: #18140f; border: 1px solid var(--line);
+    border-radius: 6px; padding: 8px 10px;
+  }
+  .stat .v { font-size: 18px; font-weight: 600; }
+  .stat .k { font-size: 10px; color: var(--muted); }
+  .legend { font-size: 11px; line-height: 1.9; margin-bottom: 18px; }
+
+  /* 逐个浮现动画 —— 注意优先级:.dim/.hl 要能压住 .appeared */
+  .node, .link {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .node.appeared, .link.appeared { opacity: 1; }
+  .link.appeared.fn { opacity: 0.55; }
+  /* 选中后的高亮/淡化 —— 用组合 selector 提高优先级 */
+  .node.appeared.dim { opacity: 0.18; }
+  .link.appeared.dim { opacity: 0.06; }
+  .node.appeared.hl, .link.appeared.hl { opacity: 1; }
+
+  /* 右栏人物列表 */
+  .people-title {
+    font-size: 11px; color: var(--muted); letter-spacing: 0.2em;
+    margin: 4px 0 8px;
+  }
+  .people-list {
+    max-height: 320px; overflow-y: auto;
+    margin-bottom: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .person-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 6px;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .person-row:hover { background: #221d18; }
+  .person-row.active {
+    background: #2a2218;
+    border-left: 2px solid var(--L3);
+    padding-left: 4px;
+  }
+  .person-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .person-info { flex: 1; min-width: 0; }
+  .person-name { font-size: 12px; color: var(--ink); }
+  .person-line {
+    font-size: 10px; color: var(--muted);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .person-count {
+    font-size: 12px; color: var(--L3);
+    flex-shrink: 0; padding-left: 4px;
+  }
+
+  /* 选择反馈：NEXT 按钮 active 状态 */
+  .nav-next.has-pick {
+    border-color: var(--L3) !important;
+    background: rgba(50, 42, 36, 0.95) !important;
+  }
+  .nav-next.has-pick .label-pick {
+    color: var(--L3); margin-right: 6px;
+  }
+  .swatch {
+    display: inline-block; width: 10px; height: 10px;
+    border-radius: 50%; margin-right: 6px; vertical-align: middle;
+  }
+  .line-key {
+    display: inline-block; width: 22px; height: 0;
+    border-top-width: 2px; border-top-style: solid;
+    margin-right: 6px; vertical-align: middle;
+  }
+  #detail {
+    border-top: 1px solid var(--line); padding-top: 14px;
+    font-size: 12px; line-height: 1.7;
+  }
+  #detail .title { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+  #detail .edge {
+    padding: 3px 0; border-bottom: 1px dotted var(--line);
+  }
+  #detail .edge .rel { color: var(--muted); font-size: 10px; }
+  #detail .tag {
+    display: inline-block; padding: 1px 6px; border-radius: 3px;
+    font-size: 10px; margin-right: 4px;
+  }
+  #detail .seed {
+    background: #18140f; border: 1px solid var(--line);
+    border-radius: 6px; padding: 10px; margin-top: 10px;
+  }
+  #detail .placeholder { color: var(--muted); }
+  .hint { font-size: 11px; color: var(--muted); margin-top: 10px; }
+
+  /* 导航：返回 landing + 下一步 */
+  .nav-back, .nav-next {
+    position: fixed;
+    background: rgba(31, 27, 24, 0.92);
+    border: 1px solid #3a342e;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: #e8e2d8;
+    text-decoration: none;
+    z-index: 1000;
+    font-family: -apple-system, "PingFang SC", sans-serif;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.3s, transform 0.3s, background 0.3s;
+  }
+  .nav-back { top: 20px; left: 20px; }
+  .nav-next { bottom: 24px; right: 24px; }
+  .nav-back:hover, .nav-next:hover {
+    border-color: #e0a05a;
+    background: rgba(50, 42, 36, 0.95);
+    transform: translateY(-1px);
+  }
+  .nav-next { color: #e0a05a; }
+  .nav-next .label { color: #8a8178; font-size: 10px; letter-spacing: 0.2em; margin-right: 8px; }
+
+  /* 语言切换按钮 */
+  #lang-toggle {
+    position: fixed;
+    top: 20px; right: 380px;
+    z-index: 200;
+    display: flex;
+    background: rgba(31, 27, 24, 0.85);
+    border: 1px solid #3a342e;
+    border-radius: 4px;
+    overflow: hidden;
+    backdrop-filter: blur(6px);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+  }
+  #lang-toggle button {
+    background: transparent; border: none;
+    color: #8a8178; padding: 6px 12px;
+    font-family: inherit; cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+  }
+  #lang-toggle button:hover { color: #e8e2d8; }
+  #lang-toggle button.active {
+    color: #e0a05a; background: rgba(50, 42, 36, 0.6);
+  }
+</style>
+</head>
+<body>
+<a class="nav-back" href="../../landing.html" data-i18n="nav.back">← 回 故知</a>
+<a class="nav-next" id="nav-next" href="guzhi_town.html"><span class="label">N E X T</span><span id="nav-next-text" data-i18n="nav.next">进 故知小镇</span> →</a>
+<div id="lang-toggle">
+  <button data-lang="zh" class="active">中</button>
+  <button data-lang="en">EN</button>
+</div>
+<div id="app">
+  <div id="stage"><svg id="svg"></svg></div>
+  <div id="panel">
+    <h1 data-i18n="panel.title">故知 · KG-First 匹配</h1>
+    <div class="sub" data-i18n="panel.sub">30 个合成人物 · 节点是人，连线是匹配</div>
+    <div class="stats" id="stats"></div>
+    <div class="legend" id="legend"></div>
+    <div class="people-title" data-i18n="panel.peopleTitle">挑 一 个 跟 着 进 镇</div>
+    <div class="people-list" id="people-list"></div>
+    <div id="detail">
+      <div class="placeholder" data-i18n-html="panel.placeholder">点一个节点，看 ta 的知识图谱边；<br>点一条连线，看这对匹配的故事种子。</div>
+    </div>
+    <div class="hint" data-i18n="panel.hint">可以拖节点调位置。灰色虚线 = 该配但算法没配上（FN）。</div>
+  </div>
+</div>
+
+<script>
+const DATA = /*__PAYLOAD__*/;
+
+// ── i18n: 先于一切渲染逻辑声明（避免 TDZ 让启动调用炸掉） ──
+const I18N = {
+  zh: {
+    'nav.back': '← 回 故知',
+    'nav.next': '进 故知小镇',
+    'nav.next.pick': name => `跟着 ${name} 进镇`,
+    'panel.title': '故知 · KG-First 匹配',
+    'panel.sub': '30 个合成人物 · 节点是人，连线是匹配',
+    'panel.peopleTitle': '挑 一 个 跟 着 进 镇',
+    'panel.placeholder': '点一个节点，看 ta 的知识图谱边；<br>点一条连线，看这对匹配的故事种子。',
+    'panel.hint': '可以拖节点调位置。灰色虚线 = 该配但算法没配上（FN）。',
+    'stats.people': '合成人物',
+    'stats.f1': 'F1',
+    'stats.tp': '配对 TP',
+    'stats.fp': '误配 FP',
+    'stats.precision': '精确率',
+    'stats.recall': '召回率',
+    'legend.L3': 'L3 存在性议题（最深）',
+    'legend.L2': 'L2 价值观',
+    'legend.L1': 'L1 偏好品味',
+    'legend.tp': '配对了',
+    'legend.fp': '算法配错（FP）',
+    'legend.fn': '算法漏掉（FN）',
+    'legend.nodeSize': '节点越大 = 涉及的语义簇越多',
+  },
+  en: {
+    'nav.back': '← Back',
+    'nav.next': 'Enter Guzhi Town',
+    'nav.next.pick': name => `Follow ${name} into town`,
+    'panel.title': 'Guzhi · KG-First Matching',
+    'panel.sub': '30 synthetic personas · force-directed · nodes=people, edges=matches',
+    'panel.peopleTitle': 'P I C K  S O M E O N E  T O  F O L L O W',
+    'panel.placeholder': "Click a node to see their knowledge graph.<br>Click an edge to see the match's story seed.",
+    'panel.hint': 'Drag nodes to adjust layout. Gray dotted lines = matches the algorithm missed (FN).',
+    'stats.people': 'personas',
+    'stats.f1': 'F1',
+    'stats.tp': 'true positives',
+    'stats.fp': 'false positives',
+    'stats.precision': 'precision',
+    'stats.recall': 'recall',
+    'legend.L3': 'L3 existential (deepest)',
+    'legend.L2': 'L2 values',
+    'legend.L1': 'L1 preferences',
+    'legend.tp': 'correct match',
+    'legend.fp': 'false positive',
+    'legend.fn': 'missed by algorithm',
+    'legend.nodeSize': 'Node size = number of semantic clusters',
+  },
+};
+let currentLang = 'zh';
+function t(key, ...args) {
+  const dict = I18N[currentLang] || I18N.zh;
+  const v = dict[key];
+  if (typeof v === 'function') return v(...args);
+  return v !== undefined ? v : (I18N.zh[key] || key);
+}
+function applyI18n(lang) {
+  currentLang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const v = t(el.getAttribute('data-i18n'));
+    if (v) el.textContent = v;
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const v = t(el.getAttribute('data-i18n-html'));
+    if (v) el.innerHTML = v;
+  });
+  document.documentElement.setAttribute('lang', lang);
+  document.querySelectorAll('#lang-toggle button').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+  });
+  try { localStorage.setItem('guzhi_lang', lang); } catch (e) {}
+  // 重渲依赖语言的动态面板
+  if (typeof buildPanel === 'function') buildPanel();
+  if (typeof buildPeopleList === 'function') buildPeopleList();
+}
+
+// ---------- 工具 ----------
+const svg = document.getElementById('svg');
+const W = () => svg.clientWidth, H = () => svg.clientHeight;
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+const CL_COLOR = { L3: '#e0a05a', L2: '#7fa68a', L1: '#6b8caf' };
+
+// 一个人的"主色" = 它涉及的最深等级簇的颜色
+function personColor(p) {
+  const levels = p.clusters.map(c => DATA.clusters[c].level);
+  if (levels.includes('L3')) return CL_COLOR.L3;
+  if (levels.includes('L2')) return CL_COLOR.L2;
+  if (levels.includes('L1')) return CL_COLOR.L1;
+  return '#666';
+}
+
+// ---------- 力导向布局（极简自实现，不依赖 d3）----------
+const nodes = DATA.personas.map(p => ({
+  id: p.id, name: p.name, data: p,
+  x: W()/2 + (Math.random()-0.5)*400,
+  y: H()/2 + (Math.random()-0.5)*400,
+  vx: 0, vy: 0,
+}));
+const nodeById = {};
+nodes.forEach(n => nodeById[n.id] = n);
+
+// 连线：matched links (tp/fp) + missed (fn)
+const links = [];
+DATA.links.forEach(l => links.push({
+  source: l.source, target: l.target,
+  kind: l.in_truth ? 'tp' : 'fp', meta: l,
+}));
+DATA.missed.forEach(m => links.push({
+  source: m.source, target: m.target, kind: 'fn', meta: null,
+}));
+
+function tick() {
+  // 斥力
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i+1; j < nodes.length; j++) {
+      const a = nodes[i], b = nodes[j];
+      let dx = a.x - b.x, dy = a.y - b.y;
+      let d2 = dx*dx + dy*dy || 1;
+      let d = Math.sqrt(d2);
+      // 斥力按视口尺寸放缩：小屏更小斥力,大屏更大
+      // SVG 还没尺寸时用 fallback,免得斥力为 0 节点黏在一起
+      const viewport = Math.min(W() || 800, H() || 600);
+      const rep = (viewport * viewport * 0.004) / d2;
+      const fx = dx/d * rep, fy = dy/d * rep;
+      a.vx += fx; a.vy += fy; b.vx -= fx; b.vy -= fy;
+    }
+  }
+  // 引力（沿连线）—— 目标距离按视口尺寸放缩
+  const vp = Math.min(W() || 800, H() || 600);
+  const linkTarget = vp * 0.12;
+  const linkTargetFn = vp * 0.18;
+  links.forEach(l => {
+    const a = nodeById[l.source], b = nodeById[l.target];
+    let dx = b.x - a.x, dy = b.y - a.y;
+    let d = Math.sqrt(dx*dx + dy*dy) || 1;
+    const target = l.kind === 'fn' ? linkTargetFn : linkTarget;
+    const k = (d - target) * 0.012;
+    const fx = dx/d * k, fy = dy/d * k;
+    a.vx += fx; a.vy += fy; b.vx -= fx; b.vy -= fy;
+  });
+  // 向心 + 阻尼 + 积分
+  const ww = W() || 800, hh = H() || 600;
+  const cx = ww/2, cy = hh/2;
+  nodes.forEach(n => {
+    n.vx += (cx - n.x) * 0.002;
+    n.vy += (cy - n.y) * 0.002;
+    n.vx *= 0.82; n.vy *= 0.82;
+    if (n !== dragging) { n.x += n.vx; n.y += n.vy; }
+    n.x = Math.max(30, Math.min(ww-30, n.x));
+    n.y = Math.max(30, Math.min(hh-30, n.y));
+  });
+  render();
+}
+
+// ---------- 渲染 ----------
+let linkEls = {}, nodeEls = {};
+let selected = null;
+
+function buildSvg() {
+  svg.innerHTML = '';
+  const gLinks = el('g', {}), gNodes = el('g', {});
+  svg.appendChild(gLinks); svg.appendChild(gNodes);
+
+  // 把所有节点初始位置塞到中央附近（小半径随机），
+  // 看起来像"从中心向外派发"
+  // 注意: SVG 可能此时还没渲染完, W()/H() 可能为 0
+  //       用 fallback 默认尺寸,真实尺寸一旦就位,resize 处理器会重摆
+  const fallbackW = window.innerWidth - 360; // panel 360px
+  const fallbackH = window.innerHeight;
+  const cx = (W() || fallbackW) / 2;
+  const cy = (H() || fallbackH) / 2;
+  nodes.forEach(n => {
+    n.x = cx + (Math.random() - 0.5) * 30;
+    n.y = cy + (Math.random() - 0.5) * 30;
+    n.vx = 0; n.vy = 0;
+  });
+
+  links.forEach((l, i) => {
+    const line = el('line', { class: 'link ' + l.kind });
+    line._link = l;
+    if (l.kind !== 'fn') {
+      line.style.cursor = 'pointer';
+      line.addEventListener('click', e => { e.stopPropagation(); selectLink(l); });
+    }
+    gLinks.appendChild(line);
+    linkEls[i] = line;
+  });
+
+  nodes.forEach(n => {
+    const g = el('g', { class: 'node' });
+    const r = 7 + n.data.clusters.length * 1.5;
+    const c = el('circle', { r: r, fill: personColor(n.data) });
+    const t = el('text', { y: r + 12 });
+    t.textContent = n.name;
+    g.appendChild(c); g.appendChild(t);
+    g.addEventListener('click', e => { e.stopPropagation(); selectNode(n); });
+    g.addEventListener('mousedown', e => startDrag(n, e));
+    gNodes.appendChild(g);
+    nodeEls[n.id] = { g, c, r };
+  });
+
+  // Stagger 出场：节点先一个一个浮现，连线随后
+  // 一共 30 节点 × 80ms = 2.4s, 然后连线一起淡入
+  nodes.forEach((n, i) => {
+    setTimeout(() => {
+      const ne = nodeEls[n.id];
+      if (ne) ne.g.classList.add('appeared');
+    }, i * 80);
+  });
+  // 所有节点出场后,连线一起淡入
+  setTimeout(() => {
+    links.forEach((l, i) => linkEls[i].classList.add('appeared'));
+  }, nodes.length * 80 + 200);
+}
+
+function render() {
+  links.forEach((l, i) => {
+    const a = nodeById[l.source], b = nodeById[l.target];
+    const e = linkEls[i];
+    e.setAttribute('x1', a.x); e.setAttribute('y1', a.y);
+    e.setAttribute('x2', b.x); e.setAttribute('y2', b.y);
+  });
+  nodes.forEach(n => {
+    const ne = nodeEls[n.id];
+    ne.g.setAttribute('transform', `translate(${n.x},${n.y})`);
+  });
+}
+
+// ---------- 交互：选择 ----------
+function clearHighlight() {
+  Object.values(nodeEls).forEach(ne => ne.g.classList.remove('hl','dim'));
+  links.forEach((l,i) => linkEls[i].classList.remove('hl','dim'));
+  // 重置右栏列表选中
+  document.querySelectorAll('.person-row.active')
+          .forEach(row => row.classList.remove('active'));
+  // 重置 NEXT 按钮
+  const next = document.getElementById('nav-next');
+  if (next) {
+    next.setAttribute('href', `guzhi_town.html?lang=${currentLang}`);
+    next.classList.remove('has-pick');
+    document.getElementById('nav-next-text').textContent = t('nav.next');
+  }
+}
+
+function selectNode(n) {
+  selected = { type: 'node', n };
+  clearHighlight();
+  const connected = new Set([n.id]);
+  links.forEach((l,i) => {
+    if (l.source === n.id || l.target === n.id) {
+      linkEls[i].classList.add('hl');
+      connected.add(l.source); connected.add(l.target);
+    } else {
+      linkEls[i].classList.add('dim');
+    }
+  });
+  Object.entries(nodeEls).forEach(([id, ne]) => {
+    if (connected.has(id)) ne.g.classList.add('hl');
+    else ne.g.classList.add('dim');
+  });
+  renderNodeDetail(n);
+
+  // 联动右栏列表：高亮对应行
+  document.querySelectorAll('.person-row').forEach(row => {
+    row.classList.toggle('active', row.getAttribute('data-pid') === n.id);
+  });
+  // 改 NEXT 按钮：跟这个人进小镇
+  const next = document.getElementById('nav-next');
+  const text = document.getElementById('nav-next-text');
+  next.setAttribute('href', `guzhi_town.html?follow=${n.id}&lang=${currentLang}`);
+  next.classList.add('has-pick');
+  text.textContent = t('nav.next.pick', n.name);
+}
+
+function selectLink(l) {
+  selected = { type: 'link', l };
+  clearHighlight();
+  links.forEach((x,i) => {
+    if (x === l) linkEls[i].classList.add('hl');
+    else linkEls[i].classList.add('dim');
+  });
+  Object.entries(nodeEls).forEach(([id, ne]) => {
+    if (id === l.source || id === l.target) ne.g.classList.add('hl');
+    else ne.g.classList.add('dim');
+  });
+  renderLinkDetail(l);
+}
+
+svg.addEventListener('click', () => {
+  selected = null; clearHighlight();
+  document.getElementById('detail').innerHTML =
+    `<div class="placeholder">${t('panel.placeholder')}</div>`;
+});
+
+// ---------- 详情面板 ----------
+function clusterTag(cid) {
+  const c = DATA.clusters[cid];
+  return `<span class="tag" style="background:${CL_COLOR[c.level]}33;color:${CL_COLOR[c.level]}">${cid} ${c.name} · ${c.level}</span>`;
+}
+
+function genderMark(g) {
+  if (g === 'male') return '<span style="color:#6b8caf">♂</span>';
+  if (g === 'female') return '<span style="color:#c98a9b">♀</span>';
+  return '';
+}
+
+function renderNodeDetail(n) {
+  const p = n.data;
+  let h = `<div class="title">${p.name} ${genderMark(p.gender)}</div>`;
+  if (p.archetype) {
+    h += `<div style="color:var(--muted);font-size:11px;margin-bottom:6px">画像 · ${p.archetype}　·　${p.id}</div>`;
+  }
+  h += `<div style="margin-bottom:8px">${p.clusters.map(clusterTag).join('')}</div>`;
+  h += `<div style="color:var(--muted);font-size:11px;margin-bottom:4px">知识图谱里的边（${p.edges.length} 条）</div>`;
+  p.edges.forEach(e => {
+    const cl = e.cluster ? `<span style="color:${CL_COLOR[DATA.clusters[e.cluster].level]}">${e.cluster}</span>` : '<span style="color:#555">无簇</span>';
+    h += `<div class="edge"><span class="rel">${e.relation} · ${e.strength} · ${cl}</span><br>${e.entity}</div>`;
+  });
+  document.getElementById('detail').innerHTML = h;
+}
+
+function renderLinkDetail(l) {
+  const m = l.meta;
+  const a = nodeById[l.source], b = nodeById[l.target];
+  let h = `<div class="title">${a.name} ↔ ${b.name}</div>`;
+  const verdict = l.kind === 'tp'
+    ? '<span style="color:var(--tp)">✓ 配对了（TP）</span>'
+    : '<span style="color:var(--fp)">⚠ 算法配错了（FP）— 真值表里不该配</span>';
+  h += `<div style="margin-bottom:8px">${verdict}　契合分 <b>${m.score.toFixed(3)}</b></div>`;
+  h += `<div style="color:var(--muted);font-size:11px">共享的语义簇</div>`;
+  h += `<div style="margin-bottom:8px">${m.shared_clusters.map(clusterTag).join('')}</div>`;
+  h += `<div style="color:var(--muted);font-size:11px">信号明细</div><div style="margin-bottom:8px">`;
+  for (const [k,v] of Object.entries(m.signals)) {
+    if (v > 0) h += `<div style="font-size:11px">${k}: ${v.toFixed(3)}</div>`;
+  }
+  h += `</div>`;
+  if (m.seed) {
+    const s = m.seed;
+    h += `<div class="seed"><div style="color:var(--muted);font-size:10px">故事种子 · ${s.seed_type} · 权重 ${s.weight}</div>`;
+    h += `<div style="margin-top:6px">${a.name}：「${s.a_entity}」<br>${b.name}：「${s.b_entity}」</div>`;
+    h += `<div class="placeholder" style="margin-top:8px;font-size:11px">[ 这颗种子交给 Claude Narrator → 生成 6-10 轮的相遇对话 ]</div></div>`;
+  }
+  document.getElementById('detail').innerHTML = h;
+}
+
+// ---------- 拖拽 ----------
+let dragging = null, dragOff = {x:0,y:0};
+function startDrag(n, e) {
+  dragging = n;
+  const pt = svgPoint(e);
+  dragOff.x = n.x - pt.x; dragOff.y = n.y - pt.y;
+}
+function svgPoint(e) {
+  const r = svg.getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+window.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  const pt = svgPoint(e);
+  dragging.x = pt.x + dragOff.x;
+  dragging.y = pt.y + dragOff.y;
+  dragging.vx = dragging.vy = 0;
+});
+window.addEventListener('mouseup', () => { dragging = null; });
+
+// ---------- 侧栏静态内容 ----------
+function buildPanel() {
+  const s = DATA.stats;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="v">${s.count}</div><div class="k">${t('stats.people')}</div></div>
+    <div class="stat"><div class="v">${(s.f1*100).toFixed(0)}%</div><div class="k">${t('stats.f1')}</div></div>
+    <div class="stat"><div class="v" style="color:var(--tp)">${s.tp}</div><div class="k">${t('stats.tp')}</div></div>
+    <div class="stat"><div class="v" style="color:var(--fp)">${s.fp}</div><div class="k">${t('stats.fp')}</div></div>
+    <div class="stat"><div class="v">${(s.precision*100).toFixed(1)}%</div><div class="k">${t('stats.precision')}</div></div>
+    <div class="stat"><div class="v">${(s.recall*100).toFixed(1)}%</div><div class="k">${t('stats.recall')}</div></div>
+  `;
+  document.getElementById('legend').innerHTML = `
+    <div><span class="swatch" style="background:var(--L3)"></span>${t('legend.L3')}</div>
+    <div><span class="swatch" style="background:var(--L2)"></span>${t('legend.L2')}</div>
+    <div><span class="swatch" style="background:var(--L1)"></span>${t('legend.L1')}</div>
+    <div style="margin-top:6px"><span class="line-key" style="border-color:var(--tp)"></span>${t('legend.tp')}</div>
+    <div><span class="line-key" style="border-color:var(--fp);border-top-style:dashed"></span>${t('legend.fp')}</div>
+    <div><span class="line-key" style="border-color:var(--fn);border-top-style:dotted"></span>${t('legend.fn')}</div>
+    <div style="margin-top:4px;color:var(--muted)">${t('legend.nodeSize')}</div>
+  `;
+}
+
+// ---------- 人物列表（右栏，按潜在故知数降序）----------
+function buildPeopleList() {
+  // 计算每个节点的"潜在匹配数"（matched links 数,排除 fn）
+  const matchCount = {};
+  nodes.forEach(n => matchCount[n.id] = 0);
+  DATA.links.forEach(l => {
+    if (l.in_truth) {
+      matchCount[l.source] = (matchCount[l.source] || 0) + 1;
+      matchCount[l.target] = (matchCount[l.target] || 0) + 1;
+    }
+  });
+  // 按潜在匹配数降序
+  const ordered = [...nodes].sort(
+    (a, b) => (matchCount[b.id] || 0) - (matchCount[a.id] || 0)
+  );
+  const oneLiner = p => {
+    const cs = p.clusters || [];
+    if (cs.length === 0) return '（特质不详）';
+    return cs.slice(0, 2).join(' · ');
+  };
+  document.getElementById('people-list').innerHTML = ordered.map(n => {
+    const p = n.data;
+    return `<div class="person-row" data-pid="${n.id}">
+      <span class="person-dot" style="background:${personColor(p)}"></span>
+      <div class="person-info">
+        <div class="person-name">${n.name}</div>
+        <div class="person-line">${oneLiner(p)}</div>
+      </div>
+      <div class="person-count">${matchCount[n.id] || 0}</div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.person-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const pid = row.getAttribute('data-pid');
+      const n = nodeById[pid];
+      if (n) selectNode(n);
+    });
+  });
+}
+
+// ---------- 启动 ----------
+buildSvg();
+buildPanel();
+buildPeopleList();
+let frame = 0;
+function loop() {
+  if (frame < 400) { tick(); frame++; }
+  else render();
+  requestAnimationFrame(loop);
+}
+loop();
+// resize：重新摆位 + 重启物理 + 重排 link target
+window.addEventListener('resize', () => {
+  const cx = W()/2, cy = H()/2;
+  // 把节点拉回中央附近，让力导向重新跑
+  nodes.forEach(n => {
+    // 保留相对位置,但整体缩放到新视口
+    n.x = cx + (n.x - W()/2) * 0.5 + (Math.random() - 0.5) * 30;
+    n.y = cy + (n.y - H()/2) * 0.5 + (Math.random() - 0.5) * 30;
+    n.vx = 0; n.vy = 0;
+  });
+  frame = 0;
+});
+
+// ── i18n: listeners + initLang（声明已上移到文件顶部） ──
+document.querySelectorAll('#lang-toggle button').forEach(b => {
+  b.addEventListener('click', () => {
+    const lang = b.getAttribute('data-lang');
+    applyI18n(lang);
+    // 同步更新 NEXT 按钮的 href（保留可能的 follow 参数）
+    const next = document.getElementById('nav-next');
+    if (next && !next.classList.contains('has-pick')) {
+      next.setAttribute('href', `guzhi_town.html?lang=${lang}`);
+    } else if (next) {
+      // 已选择跟随的情况，重新构 url
+      const url = new URL(next.getAttribute('href'), location.href);
+      url.searchParams.set('lang', lang);
+      next.setAttribute('href', url.pathname + url.search);
+    }
+  });
+});
+(function initLang() {
+  // URL ?lang= 优先（landing 传过来）, 然后 localStorage, 然后浏览器语言
+  let lang = 'zh';
+  try {
+    const urlLang = new URLSearchParams(location.search).get('lang');
+    if (urlLang === 'zh' || urlLang === 'en') lang = urlLang;
+    else {
+      const saved = localStorage.getItem('guzhi_lang');
+      if (saved === 'zh' || saved === 'en') lang = saved;
+      else if (!navigator.language.startsWith('zh')) lang = 'en';
+    }
+  } catch (e) {}
+  applyI18n(lang);
+  // 初始 NEXT href 也带上 lang
+  const next = document.getElementById('nav-next');
+  if (next) next.setAttribute('href', `guzhi_town.html?lang=${lang}`);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+{
+  "id": "SYN08",
+  "name": "孙南乔",
+  "gender": "female",
+  "archetype": "追问意义者·去留之间",
+  "edges": [
+    {
+      "relation": "FEELS_NOW",
+      "entity": "做这些到底有没有意义",
+      "strength": 0.72,
+      "cluster": "S4",
+      "evidence": "（合成）做这些到底有没有意义"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "杨德昌",
+      "strength": 0.67,
+      "cluster": "S10",
+      "evidence": "（合成）杨德昌"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "勃拉姆斯",
+      "strength": 0.85,
+      "cluster": "S12",
+      "evidence": "（合成）勃拉姆斯"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "在哪都像过客",
+      "strength": 0.69,
+      "cluster": "S1",
+      "evidence": "（合成）在哪都像过客"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "收集地图",
+      "strength": 0.77,
+      "cluster": null,
+      "evidence": "（合成噪音）收集地图"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "旧书店",
+      "strength": 0.78,
+      "cluster": null,
+      "evidence": "（合成噪音）旧书店"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "长期坚持一项小众爱好",
+      "strength": 0.57,
+      "cluster": null,
+      "evidence": "（合成噪音）长期坚持一项小众爱好"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "神秘留白",
+      "strength": 0.71,
+      "cluster": null,
+      "evidence": "（合成风格）神秘留白"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "慵懒散漫",
+      "strength": 0.72,
+      "cluster": null,
+      "evidence": "（合成风格）慵懒散漫"
+    }
+  ]
+}

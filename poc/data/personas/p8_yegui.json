@@ -1,0 +1,14 @@
+{
+  "id": "P8",
+  "name": "叶归",
+  "edges": [
+    {"relation": "EXPERIENCED", "entity": "东京咨询七年后回国", "strength": 0.8, "cluster": null, "evidence": "在东京一家咨询公司干了七年，去年回国"},
+    {"relation": "FEELS_NOW", "entity": "回来了却不觉得到家", "strength": 0.85, "cluster": "C1", "evidence": "回来后并不觉得到家了"},
+    {"relation": "FEELS_NOW", "entity": "留下还是离开", "strength": 0.85, "cluster": "C1", "evidence": "常想，留下还是离开"},
+    {"relation": "LIKES", "entity": "侯孝贤的电影", "strength": 0.9, "cluster": "C7", "evidence": "喜欢侯孝贤的电影"},
+    {"relation": "DISLIKES", "entity": "过度热情的客套", "strength": 0.85, "cluster": "C3", "evidence": "讨厌过度热情的客套，那不是温度，是表演"},
+    {"relation": "BELIEVES", "entity": "留白比说尽更有重量", "strength": 0.85, "cluster": null, "evidence": "我相信留白比说尽更有重量"},
+    {"relation": "BELIEVES", "entity": "留走是心理问题不是地理问题", "strength": 0.8, "cluster": "C1", "evidence": "不是地理问题，是心理问题"},
+    {"relation": "SPEAKS_AS", "entity": "神秘留白", "strength": 0.85, "cluster": null, "evidence": "说话偏含蓄，永远只说半句"}
+  ]
+}

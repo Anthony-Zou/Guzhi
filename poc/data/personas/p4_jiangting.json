@@ -1,0 +1,14 @@
+{
+  "id": "P4",
+  "name": "江停",
+  "edges": [
+    {"relation": "EXPERIENCED", "entity": "离职做独立开发", "strength": 0.7, "cluster": null, "evidence": "离职两年了，自己写没人用的开源工具"},
+    {"relation": "LIKES", "entity": "简洁的代码与算法", "strength": 0.9, "cluster": "C5", "evidence": "喜欢简洁的代码、漂亮的算法、Knuth那种"},
+    {"relation": "DISLIKES", "entity": "炫耀式消费", "strength": 0.8, "cluster": null, "evidence": "讨厌炫耀式消费"},
+    {"relation": "DISLIKES", "entity": "成功学", "strength": 0.85, "cluster": "C2", "evidence": "讨厌成功学"},
+    {"relation": "BELIEVES", "entity": "工具应该boring才好", "strength": 0.85, "cluster": "C5", "evidence": "工具应该boring才是好工具"},
+    {"relation": "FEELS_NOW", "entity": "做的东西没人在乎", "strength": 0.6, "cluster": null, "evidence": "比主流方案快三倍，但没人在乎"},
+    {"relation": "SPEAKS_AS", "entity": "直球简洁", "strength": 0.85, "cluster": null, "evidence": "说话直球、短句、就事论事"},
+    {"relation": "SPEAKS_AS", "entity": "短句", "strength": 0.7, "cluster": null, "evidence": "短句"}
+  ]
+}

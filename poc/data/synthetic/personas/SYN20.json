@@ -1,0 +1,85 @@
+{
+  "id": "SYN20",
+  "name": "黄未眠",
+  "gender": "female",
+  "archetype": "重组中的我·诚实派",
+  "edges": [
+    {
+      "relation": "BELIEVES",
+      "entity": "不说自己不信的话",
+      "strength": 0.88,
+      "cluster": "S8",
+      "evidence": "（合成）不说自己不信的话"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "真实比体面重要",
+      "strength": 0.81,
+      "cluster": "S8",
+      "evidence": "（合成）真实比体面重要"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "身份变了内核还在不在",
+      "strength": 0.78,
+      "cluster": "S3",
+      "evidence": "（合成）身份变了内核还在不在"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "德彪西",
+      "strength": 0.75,
+      "cluster": "S12",
+      "evidence": "（合成）德彪西"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "勃拉姆斯",
+      "strength": 0.92,
+      "cluster": "S12",
+      "evidence": "（合成）勃拉姆斯"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "蔡明亮",
+      "strength": 0.7,
+      "cluster": "S10",
+      "evidence": "（合成）蔡明亮"
+    },
+    {
+      "relation": "DISLIKES",
+      "entity": "早起",
+      "strength": 0.75,
+      "cluster": null,
+      "evidence": "（合成噪音）早起"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "独自旅行过",
+      "strength": 0.52,
+      "cluster": null,
+      "evidence": "（合成噪音）独自旅行过"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "锐利批判",
+      "strength": 0.72,
+      "cluster": null,
+      "evidence": "（合成风格）锐利批判"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "激昂热烈",
+      "strength": 0.66,
+      "cluster": null,
+      "evidence": "（合成风格）激昂热烈"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "紧凑高密度",
+      "strength": 0.73,
+      "cluster": null,
+      "evidence": "（合成风格）紧凑高密度"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "P2",
+  "name": "周临",
+  "edges": [
+    {"relation": "EXPERIENCED", "entity": "从一线城市回成都", "strength": 0.8, "cluster": null, "evidence": "半年前从上海回了成都"},
+    {"relation": "EXPERIENCED", "entity": "上海五年广告生涯", "strength": 0.7, "cluster": null, "evidence": "在上海做了五年广告"},
+    {"relation": "LIKES", "entity": "黑泽明", "strength": 0.9, "cluster": "C7", "evidence": "黑泽明我也爱"},
+    {"relation": "BELIEVES", "entity": "乱是关于宽恕", "strength": 0.8, "cluster": "C7", "evidence": "乱在我看是关于宽恕"},
+    {"relation": "BELIEVES", "entity": "人不需要一直证明自己", "strength": 0.85, "cluster": "C2", "evidence": "人不需要一直证明自己"},
+    {"relation": "FEELS_NOW", "entity": "把节奏放慢", "strength": 0.8, "cluster": null, "evidence": "我现在每天就是把节奏放慢"},
+    {"relation": "FEELS_NOW", "entity": "五年前的我会怎么看现在的我", "strength": 0.75, "cluster": "C1", "evidence": "常想，五年前的我会怎么看现在的我"},
+    {"relation": "SPEAKS_AS", "entity": "直球简洁", "strength": 0.85, "cluster": null, "evidence": "我说话很直，没废话"},
+    {"relation": "SPEAKS_AS", "entity": "短句", "strength": 0.6, "cluster": null, "evidence": "没废话"}
+  ]
+}

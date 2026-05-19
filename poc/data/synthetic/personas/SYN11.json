@@ -1,0 +1,71 @@
+{
+  "id": "SYN11",
+  "name": "高亦舟",
+  "gender": "male",
+  "archetype": "低谷里的人·追问意义者",
+  "edges": [
+    {
+      "relation": "FEELS_NOW",
+      "entity": "什么时候才能不紧绷",
+      "strength": 0.67,
+      "cluster": "S2",
+      "evidence": "（合成）什么时候才能不紧绷"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "贾樟柯",
+      "strength": 0.85,
+      "cluster": "S10",
+      "evidence": "（合成）贾樟柯"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "小津安二郎",
+      "strength": 0.74,
+      "cluster": "S10",
+      "evidence": "（合成）小津安二郎"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "热闹之后的空虚感",
+      "strength": 0.85,
+      "cluster": "S4",
+      "evidence": "（合成）热闹之后的空虚感"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "成功之后然后呢",
+      "strength": 0.74,
+      "cluster": "S4",
+      "evidence": "（合成）成功之后然后呢"
+    },
+    {
+      "relation": "DISLIKES",
+      "entity": "排队等待",
+      "strength": 0.5,
+      "cluster": null,
+      "evidence": "（合成噪音）排队等待"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "读过研究生",
+      "strength": 0.72,
+      "cluster": null,
+      "evidence": "（合成噪音）读过研究生"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "文艺抒情",
+      "strength": 0.66,
+      "cluster": null,
+      "evidence": "（合成风格）文艺抒情"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "激昂热烈",
+      "strength": 0.68,
+      "cluster": null,
+      "evidence": "（合成风格）激昂热烈"
+    }
+  ]
+}

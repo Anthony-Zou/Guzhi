@@ -1,0 +1,64 @@
+{
+  "id": "SYN15",
+  "name": "赵言书",
+  "gender": "male",
+  "archetype": "去留之间·独行者",
+  "edges": [
+    {
+      "relation": "BELIEVES",
+      "entity": "我的节奏我自己定",
+      "strength": 0.88,
+      "cluster": "S7",
+      "evidence": "（合成）我的节奏我自己定"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "这座城市还值不值得待",
+      "strength": 0.7,
+      "cluster": "S1",
+      "evidence": "（合成）这座城市还值不值得待"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "回去算不算认输",
+      "strength": 0.86,
+      "cluster": "S1",
+      "evidence": "（合成）回去算不算认输"
+    },
+    {
+      "relation": "DISLIKES",
+      "entity": "电话推销",
+      "strength": 0.8,
+      "cluster": null,
+      "evidence": "（合成噪音）电话推销"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "换过两次行业",
+      "strength": 0.58,
+      "cluster": null,
+      "evidence": "（合成噪音）换过两次行业"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "锐利批判",
+      "strength": 0.67,
+      "cluster": null,
+      "evidence": "（合成风格）锐利批判"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "温柔细腻",
+      "strength": 0.8,
+      "cluster": null,
+      "evidence": "（合成风格）温柔细腻"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "学术理性",
+      "strength": 0.72,
+      "cluster": null,
+      "evidence": "（合成风格）学术理性"
+    }
+  ]
+}

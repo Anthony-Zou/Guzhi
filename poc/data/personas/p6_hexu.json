@@ -1,0 +1,12 @@
+{
+  "id": "P6",
+  "name": "何叙",
+  "edges": [
+    {"relation": "FEELS_NOW", "entity": "状态很差", "strength": 0.85, "cluster": "C4", "evidence": "状态很差"},
+    {"relation": "FEELS_NOW", "entity": "该不该停下来但不敢", "strength": 0.85, "cluster": "C4", "evidence": "常想是不是该停下来但不敢，怕停下来就起不来"},
+    {"relation": "LIKES", "entity": "诚实的东西", "strength": 0.9, "cluster": null, "evidence": "喜欢一切诚实的东西——诚实的诗、诚实的失败"},
+    {"relation": "DISLIKES", "entity": "职场正能量", "strength": 0.9, "cluster": "C3", "evidence": "讨厌职场正能量，那玩意儿比直接欺负人还恶心"},
+    {"relation": "EXPERIENCED", "entity": "写自己都不信的内容", "strength": 0.7, "cluster": null, "evidence": "每天写自己都不信的话"},
+    {"relation": "SPEAKS_AS", "entity": "锐利批判", "strength": 0.85, "cluster": null, "evidence": "说话锐利，朋友说我刀很快"}
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "id": "SYN29",
+  "name": "吴牧之",
+  "gender": "male",
+  "archetype": "追问意义者·低谷里的人",
+  "edges": [
+    {
+      "relation": "FEELS_NOW",
+      "entity": "成功之后然后呢",
+      "strength": 0.92,
+      "cluster": "S4",
+      "evidence": "（合成）成功之后然后呢"
+    },
+    {
+      "relation": "BELIEVES",
+      "entity": "自己定义成功",
+      "strength": 0.67,
+      "cluster": "S7",
+      "evidence": "（合成）自己定义成功"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "什么时候才能不紧绷",
+      "strength": 0.78,
+      "cluster": "S2",
+      "evidence": "（合成）什么时候才能不紧绷"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "需要一个喘息的理由",
+      "strength": 0.79,
+      "cluster": "S2",
+      "evidence": "（合成）需要一个喘息的理由"
+    },
+    {
+      "relation": "DISLIKES",
+      "entity": "把焦虑说成上进",
+      "strength": 0.8,
+      "cluster": "S9",
+      "evidence": "（合成）把焦虑说成上进"
+    },
+    {
+      "relation": "DISLIKES",
+      "entity": "表演式的乐观",
+      "strength": 0.8,
+      "cluster": "S9",
+      "evidence": "（合成）表演式的乐观"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "深夜散步",
+      "strength": 0.51,
+      "cluster": null,
+      "evidence": "（合成噪音）深夜散步"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "具象画面",
+      "strength": 0.68,
+      "cluster": null,
+      "evidence": "（合成风格）具象画面"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "锐利批判",
+      "strength": 0.63,
+      "cluster": null,
+      "evidence": "（合成风格）锐利批判"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "平静温和",
+      "strength": 0.89,
+      "cluster": null,
+      "evidence": "（合成风格）平静温和"
+    }
+  ]
+}

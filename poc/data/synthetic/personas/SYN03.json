@@ -1,0 +1,78 @@
+{
+  "id": "SYN03",
+  "name": "高执一",
+  "gender": "male",
+  "archetype": "低谷里的人·追问意义者",
+  "edges": [
+    {
+      "relation": "FEELS_NOW",
+      "entity": "需要一个喘息的理由",
+      "strength": 0.84,
+      "cluster": "S2",
+      "evidence": "（合成）需要一个喘息的理由"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "想躺平又怕真的废掉",
+      "strength": 0.76,
+      "cluster": "S2",
+      "evidence": "（合成）想躺平又怕真的废掉"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "努力的尽头是什么",
+      "strength": 0.85,
+      "cluster": "S4",
+      "evidence": "（合成）努力的尽头是什么"
+    },
+    {
+      "relation": "FEELS_NOW",
+      "entity": "我在为谁活",
+      "strength": 0.86,
+      "cluster": "S4",
+      "evidence": "（合成）我在为谁活"
+    },
+    {
+      "relation": "LIKES",
+      "entity": "肖斯塔科维奇",
+      "strength": 0.84,
+      "cluster": "S12",
+      "evidence": "（合成）肖斯塔科维奇"
+    },
+    {
+      "relation": "DISLIKES",
+      "entity": "无效会议",
+      "strength": 0.66,
+      "cluster": null,
+      "evidence": "（合成噪音）无效会议"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "长期坚持一项小众爱好",
+      "strength": 0.59,
+      "cluster": null,
+      "evidence": "（合成噪音）长期坚持一项小众爱好"
+    },
+    {
+      "relation": "EXPERIENCED",
+      "entity": "经历过重大挫折后重建",
+      "strength": 0.82,
+      "cluster": null,
+      "evidence": "（合成噪音）经历过重大挫折后重建"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "神秘留白",
+      "strength": 0.85,
+      "cluster": null,
+      "evidence": "（合成风格）神秘留白"
+    },
+    {
+      "relation": "SPEAKS_AS",
+      "entity": "锐利批判",
+      "strength": 0.83,
+      "cluster": null,
+      "evidence": "（合成风格）锐利批判"
+    }
+  ]
+}

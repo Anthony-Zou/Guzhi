@@ -1,0 +1,13 @@
+{
+  "id": "P5",
+  "name": "顾晚",
+  "edges": [
+    {"relation": "EXPERIENCED", "entity": "抑郁一年", "strength": 0.85, "cluster": "C4", "evidence": "抑郁过一年。最严重时连下楼买菜都做不到"},
+    {"relation": "LIKES", "entity": "光", "strength": 0.9, "cluster": null, "evidence": "喜欢一切关于光的东西"},
+    {"relation": "DISLIKES", "entity": "积极心理学话术", "strength": 0.9, "cluster": "C3", "evidence": "讨厌任何积极心理学话术，看到加油就想关页面"},
+    {"relation": "BELIEVES", "entity": "人会自己长好不需要被推", "strength": 0.85, "cluster": "C6", "evidence": "人会自己长好，不需要被推着"},
+    {"relation": "FEELS_NOW", "entity": "是不是可以不再怕复发", "strength": 0.8, "cluster": "C4", "evidence": "最近在想，是不是真的可以不再怕复发了"},
+    {"relation": "SPEAKS_AS", "entity": "温柔细腻", "strength": 0.85, "cluster": null, "evidence": "说话温柔"},
+    {"relation": "SPEAKS_AS", "entity": "具象画面", "strength": 0.8, "cluster": null, "evidence": "爱用画面描述心情"}
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "P7",
+  "name": "唐越",
+  "edges": [
+    {"relation": "LIKES", "entity": "运动", "strength": 0.9, "cluster": "C8", "evidence": "每周六打两场网球，周日爬山，下班跑十公里"},
+    {"relation": "LIKES", "entity": "热闹的局", "strength": 0.85, "cluster": null, "evidence": "喜欢热闹的局"},
+    {"relation": "LIKES", "entity": "果断的人", "strength": 0.7, "cluster": null, "evidence": "喜欢从不犹豫的决定"},
+    {"relation": "DISLIKES", "entity": "内耗", "strength": 0.85, "cluster": "C8", "evidence": "讨厌内耗"},
+    {"relation": "DISLIKES", "entity": "想太多", "strength": 0.8, "cluster": "C8", "evidence": "讨厌想太多"},
+    {"relation": "BELIEVES", "entity": "状态是可以选择的", "strength": 0.85, "cluster": "C8", "evidence": "我相信状态是可以选择的"},
+    {"relation": "FEELS_NOW", "entity": "想找攀岩搭子", "strength": 0.7, "cluster": "C8", "evidence": "最近想去攀岩，找个搭子"},
+    {"relation": "SPEAKS_AS", "entity": "激昂热烈", "strength": 0.85, "cluster": null, "evidence": "说话热烈"},
+    {"relation": "SPEAKS_AS", "entity": "多语气词", "strength": 0.6, "cluster": null, "evidence": "社交永动机"}
+  ]
+}
