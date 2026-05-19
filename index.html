@@ -705,25 +705,30 @@ document.querySelectorAll('#lang-toggle button').forEach(b => {
   b.addEventListener('click', () => applyI18n(b.getAttribute('data-lang')));
 });
 
-// 启动时决定语言。优先级:
-//   1) URL ?lang= (强制覆盖)
-//   2) navigator.language (系统母语 —— 默认要尊重这个)
-//   3) sessionStorage (当前 session 内用户切过手动语言时的 fallback)
-// 故意不用 localStorage —— 切过一次 EN 不会变成永久状态。
-// 关掉浏览器再来,回到系统母语。
+// 启动时决定语言。优先级 (改过两次):
+//   1) URL ?lang=        (强制覆盖,从别处带过来)
+//   2) sessionStorage    (用户在当前 session 内手动选过 —— 必须尊重)
+//   3) navigator.language (没选过 → 看系统母语)
+//   4) 默认 zh
+// 上一版把 sessionStorage 放在 navigator 之后,用户选中文跳页又被强切英文,是 bug。
+// localStorage 不用 —— 关闭浏览器后,新 session 回到 navigator 检测,不带历史包袱。
 (function initLang() {
   let lang;
   try {
     const urlLang = new URLSearchParams(location.search).get('lang');
     if (urlLang === 'zh' || urlLang === 'en') {
       lang = urlLang;
-    } else if (navigator.language && navigator.language.startsWith('zh')) {
-      lang = 'zh';
-    } else if (navigator.language) {
-      lang = 'en';
     } else {
       const saved = sessionStorage.getItem('guzhi_lang');
-      lang = (saved === 'zh' || saved === 'en') ? saved : 'zh';
+      if (saved === 'zh' || saved === 'en') {
+        lang = saved;
+      } else if (navigator.language && navigator.language.startsWith('zh')) {
+        lang = 'zh';
+      } else if (navigator.language) {
+        lang = 'en';
+      } else {
+        lang = 'zh';
+      }
     }
   } catch (e) { lang = 'zh'; }
   applyI18n(lang);

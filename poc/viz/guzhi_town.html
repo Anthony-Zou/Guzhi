@@ -1765,20 +1765,24 @@ document.querySelectorAll('#lang-toggle button').forEach(b => {
   b.addEventListener('click', () => applyI18n(b.getAttribute('data-lang')));
 });
 (function initLang() {
-  // 优先级: URL > navigator.language > session fallback
-  // localStorage 故意不用 —— 切过 EN 不变永久状态。
+  // 优先级: URL > sessionStorage (用户显式选过) > navigator.language > 默认 zh
+  // 用户的显式选择必须高于系统推断。
   let lang;
   try {
     const urlLang = new URLSearchParams(location.search).get('lang');
     if (urlLang === 'zh' || urlLang === 'en') {
       lang = urlLang;
-    } else if (navigator.language && navigator.language.startsWith('zh')) {
-      lang = 'zh';
-    } else if (navigator.language) {
-      lang = 'en';
     } else {
       const saved = sessionStorage.getItem('guzhi_lang');
-      lang = (saved === 'zh' || saved === 'en') ? saved : 'zh';
+      if (saved === 'zh' || saved === 'en') {
+        lang = saved;
+      } else if (navigator.language && navigator.language.startsWith('zh')) {
+        lang = 'zh';
+      } else if (navigator.language) {
+        lang = 'en';
+      } else {
+        lang = 'zh';
+      }
     }
   } catch (e) { lang = 'zh'; }
   applyI18n(lang);
