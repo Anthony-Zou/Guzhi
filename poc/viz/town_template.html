@@ -1478,7 +1478,8 @@ function showModeTip(mode, evt) {
 
 // ── 启动 ─────────────────────────────────────────────────
 document.getElementById('scrubber').max = DATA.n_ticks - 1;
-renderStats();
+// 注:renderStats() 移到 initLang() 里调,因为它依赖 t()/I18N (定义在下面)。
+// 之前在这里调,在 const I18N TDZ 之前就跑 -> 抛 ReferenceError -> 全脚本死。
 
 // ── 初始引导 ─────────────────────────────────────────────
 // 1. 选默认高亮的 agent: 女性 + 潜在故知最多
@@ -1536,8 +1537,9 @@ if (defaultAgent) {
   document.getElementById('intro-name').textContent = defaultAgent.name;
 }
 
-// 渲染初始帧（覆盖层下面已经画好镇子，用户点进入按钮才开始动）
-renderTick(0);
+// 渲染初始帧（覆盖层下面已经画好镇子,用户点进入按钮才开始动）
+// 注:renderTick 内部用 t() —— 等 initLang() 在 script 末尾跑完
+// applyI18n 再触发初始 render,避免 const I18N TDZ。
 
 // 2. 等用户点"进入小镇"按钮才开始播放
 document.getElementById('enter-btn').addEventListener('click', () => {
