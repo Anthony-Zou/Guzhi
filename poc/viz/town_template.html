@@ -544,6 +544,8 @@
     }
     .nav-back { top: 72px !important; font-size: 11px; padding: 8px 12px; }
     #lang-toggle { top: 72px !important; right: 16px !important; }
+    /* tooltip 是 desktop hover 设计,在手机上 tap 触发会溢出屏外 */
+    #tip { display: none !important; }
   }
 </style>
 </head>
@@ -834,7 +836,11 @@ window.clearHighlight = clearHighlight;
 
 // ── hover tooltip ────────────────────────────────────────
 const tipEl = document.getElementById('tip');
+// tooltip 是 desktop hover-only 的。窄屏(<= 720) 完全跳过 ——
+// 否则 mobile tap 仍可能触发 mouseenter,tooltip 从屏幕左边溢出来。
+function _isMobile() { return window.innerWidth <= 720; }
 function showTip(pid, evt) {
+  if (_isMobile()) return;
   const p = personaById[pid];
   if (!p) return;
   const genderMark = p.gender === 'male' ? '♂' : p.gender === 'female' ? '♀' : '';
@@ -1478,6 +1484,7 @@ document.querySelectorAll('.mode-btn').forEach(b => {
 });
 
 function showModeTip(mode, evt) {
+  if (_isMobile()) return;
   const m = MODE_EXPLAIN[mode];
   if (!m) return;
   tipEl.innerHTML = `
