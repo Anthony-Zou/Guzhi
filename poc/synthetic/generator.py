@@ -22,16 +22,31 @@ from domain.models import Edge, Persona, Cluster, ClusterLevel
 # ============================================================
 
 _SURNAMES = [
+    # 主流 + 一些更有小说感的姓 (沈/苏/江/温/陆/裴/谢/卫/姜/秦/顾/池)
     "陈", "林", "周", "黄", "吴", "刘", "张", "王", "李", "赵",
     "孙", "杨", "徐", "胡", "朱", "高", "郭", "何", "罗", "宋",
+    "沈", "苏", "江", "温", "陆", "裴", "谢", "卫", "姜", "秦",
+    "顾", "池", "云", "傅", "霍", "白", "唐", "韩", "钟", "齐",
 ]
+# 男主名字池 —— 文气、克制、有故事感,不浮夸
 _GIVEN_MALE = [
-    "屹然", "予安", "知行", "牧之", "鸿轩", "景行", "言书",
-    "怀瑾", "亦舟", "慕之", "执一", "云深", "止戈", "听澜", "砚秋",
+    "砚之", "言之", "知行", "怀瑾", "止戈", "亦舟", "云深",
+    "听澜", "予安", "牧之", "执一", "景行", "鸿渐", "屿白",
+    "衍之", "明烛", "如晦", "西沉", "之桓", "渡之", "知秋",
+    "时砚", "暮迟", "玉书", "南川", "野舟", "寻欢", "归之",
+    "无咎", "见南", "敛之", "怀远", "予清", "扶光", "南屿",
+    "守拙", "嘉树", "怀瑜", "九思", "白也", "知非", "止水",
+    "齐桓", "迟野", "之昂", "归舟", "向晚", "言行", "未济",
 ]
+# 女主名字池
 _GIVEN_FEMALE = [
-    "晓雨", "知微", "南乔", "栖迟", "若安", "见微", "未眠",
-    "之遥", "拾光", "因之", "疏桐", "清禾", "宛之", "亦柔", "宁谧",
+    "见微", "知微", "南乔", "栖迟", "若安", "未眠", "之遥",
+    "拾光", "因之", "疏桐", "清禾", "宛之", "亦柔", "宁谧",
+    "晚晴", "归棠", "予舟", "瑟瑟", "颂今", "野晴", "时予",
+    "云迟", "知岁", "明栖", "若鸿", "渡棠", "倦倦", "南萤",
+    "未央", "晚照", "听潮", "予乔", "归砚", "拾月", "知白",
+    "云栖", "微澜", "迟予", "似锦", "南溪", "予以", "知止",
+    "归宁", "拂衣", "明远", "棠予", "守静", "如砚",
 ]
 
 
@@ -217,6 +232,8 @@ class PersonaGenerator:
         # 否则同一个 seed 会生成不同的人，破坏可复现性和已有验证。
         self._trait_rng = random.Random(seed)
         self._name_rng = random.Random(seed + 100000)
+        # 已用过的姓名集合,_human_name 内部去重 —— 保证 30 人小镇内无重名
+        self._used_names: set[str] = set()
 
     def generate(self, count: int) -> list[Persona]:
         """生成指定数量的合成人物。"""
@@ -286,14 +303,29 @@ class PersonaGenerator:
                        gender=gender, archetype=archetype)
 
     def _human_name(self, rng: random.Random, gender: str) -> str:
-        """生成一个中文真人名，与性别匹配。
+        """生成一个中文真人名,与性别匹配,且在一次 generate() 内不重名。
 
-        重名是允许的（现实里也会重名），靠 id 区分。
+        重名虽然现实里会有,但在 30 人合成小镇里看起来是 bug。
+        组合空间足够大 (40 姓 × 34 名 = 1360),去重几乎不会拖慢。
+
+        如果池真的耗尽,降级回到加数字后缀的兜底版本。
         """
-        surname = rng.choice(_SURNAMES)
+        surname_pool = _SURNAMES
         given_pool = _GIVEN_MALE if gender == "male" else _GIVEN_FEMALE
-        given = rng.choice(given_pool)
-        return surname + given
+        # 最多尝试 50 次找一个没用过的;够安全
+        for _ in range(50):
+            candidate = rng.choice(surname_pool) + rng.choice(given_pool)
+            if candidate not in self._used_names:
+                self._used_names.add(candidate)
+                return candidate
+        # 池子真的耗尽 —— 加数字后缀兜底
+        fallback = rng.choice(surname_pool) + rng.choice(given_pool)
+        i = 2
+        while f"{fallback}·{i}" in self._used_names:
+            i += 1
+        result = f"{fallback}·{i}"
+        self._used_names.add(result)
+        return result
 
     def _archetype(self, chosen_clusters: list[str]) -> str:
         """生成这个人的'特质画像' —— 之前冒充 name 的两簇标签。
