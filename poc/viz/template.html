@@ -225,20 +225,23 @@
   }
   @media (max-width: 720px) {
     #mobile-notice { display: block; }
-    /* 让画布给横幅腾出顶上的空间 */
-    body { padding-top: 64px; }
-    /* nav 按钮在手机上让位给横幅,放小一点 */
-    .nav-back { top: 72px !important; font-size: 11px; padding: 8px 12px; }
-    #lang-toggle { top: 72px !important; right: 16px !important; }
-    /* 右栏 panel: 不再固定 340px,改成全宽底部抽屉感 */
-    #app { flex-direction: column; }
-    #stage { flex: 1; min-height: 60vh; }
+    /* 用 dvh 避免 iOS Safari 地址栏抖时闪屏 */
+    body { height: 100dvh; padding-top: 64px; overflow: hidden; }
+    #app {
+      flex-direction: column;
+      height: calc(100dvh - 64px);
+    }
+    #stage { flex: 0 0 60%; min-height: 0; }
     #panel {
+      flex: 0 0 40%;
       width: 100% !important;
-      max-height: 40vh; overflow-y: auto;
+      min-height: 0;
+      overflow-y: auto;
       border-left: none !important;
       border-top: 1px solid #3a342e;
     }
+    .nav-back { top: 72px !important; font-size: 11px; padding: 8px 12px; }
+    #lang-toggle { top: 72px !important; right: 16px !important; }
     .nav-next { bottom: 16px !important; right: 16px !important; font-size: 11px; }
   }
 </style>

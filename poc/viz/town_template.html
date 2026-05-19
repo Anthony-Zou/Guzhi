@@ -519,13 +519,25 @@
   }
   @media (max-width: 720px) {
     #mobile-notice { display: block; }
-    body { overflow: auto !important; height: auto !important;
-           padding-top: 64px; }
-    #app { flex-direction: column; height: auto !important; }
-    #stage { min-height: 55vh; }
-    #panel {
+    /* 用 dvh 避免 iOS Safari 地址栏 hide/show 触发 viewport 高度变化 →
+       配合 tickLoop 每 100ms 重画 -> 闪屏。
+       body 保持 overflow:hidden,SVG 不随地址栏抖。
+       padding-top 给顶部横幅让位。
+       100dvh - 64px 是横幅之外的可用高度。 */
+    body {
+      height: 100dvh;
+      padding-top: 64px;
+    }
+    #app {
+      flex-direction: column;
+      height: calc(100dvh - 64px);
+    }
+    /* 上 60% SVG, 下 40% 信息 panel;用 flex 比例避免相互推挤 */
+    #stage  { flex: 0 0 60%; min-height: 0; }
+    #panel  {
+      flex: 0 0 40%;
       width: 100% !important;
-      max-height: 45vh;
+      min-height: 0;
       overflow-y: auto;
       border-left: none !important;
       border-top: 1px solid var(--line);
