@@ -191,116 +191,300 @@
     transition: background 0.3s;
   }
   .subscribe a:hover { background: #c98a4e; }
+
+  /* 语言切换按钮 */
+  #lang-toggle {
+    position: fixed;
+    top: 24px; right: 28px;
+    z-index: 200;
+    display: flex;
+    background: rgba(31, 27, 24, 0.85);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+    backdrop-filter: blur(6px);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+  }
+  #lang-toggle button {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    padding: 6px 12px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+  }
+  #lang-toggle button:hover { color: var(--ink); }
+  #lang-toggle button.active {
+    color: var(--accent);
+    background: rgba(50, 42, 36, 0.6);
+  }
 </style>
 </head>
 <body>
 
-<a class="nav-back" href="../index.html">← 返回 故知</a>
+<a class="nav-back" href="../index.html" data-i18n="nav.back">← 返回 故知</a>
+
+<div id="lang-toggle">
+  <button data-lang="zh" class="active">中</button>
+  <button data-lang="en">EN</button>
+</div>
 
 <article>
-  <div class="masthead">故 知 通 讯 · 第 0 1 封</div>
+  <div class="masthead" data-i18n="masthead">故 知 通 讯 · 第 0 1 封</div>
 
-  <h1>算了一笔账，发现这事可能<span class="number">跑得通</span></h1>
-  <div class="meta">第 二 封 · 2 0 2 6 春</div>
+  <h1 data-i18n-html="title">算了一笔账，发现这事可能<span class="number">跑得通</span></h1>
+  <div class="meta" data-i18n="meta">第 二 封 · 2 0 2 6 春</div>
 
-  <p>上一封信发出去之后，有个朋友看完跟我说：</p>
+  <p data-i18n="p.intro">上一封信发出去之后，有个朋友看完跟我说：</p>
 
-  <blockquote>
+  <blockquote data-i18n-html="quote">
     <p>"故事我都听懂了。但你这种 agent-driven 的东西，能跑下去吗？我见过太多这类产品，几千 DAU 就把账面烧穿了。"</p>
   </blockquote>
 
-  <p>那句话戳到我了。</p>
+  <p data-i18n="p.stung">那句话戳到我了。</p>
 
-  <p>我做了一周的事情就一件：<strong>算账</strong>。</p>
-
-  <hr>
-
-  <p>先说结论：<strong>单 DAU 月成本压到了个位数美分量级</strong>。这意味着即便规模化，推理成本也不会成为压垮这事的那根稻草。</p>
-
-  <p>这数字看起来比一般 agentic social 产品低一个量级。原因不浪漫，纯粹是架构上的运气 ——</p>
-
-  <p>故知的核心匹配，<em>不烧 token</em>。</p>
-
-  <p>知识图谱匹配是图算法，不是大模型。一个人 KG 子图里有几条边，另一个人 KG 子图里有几条边，两图在哪些簇上重合、强度多深，这套是确定性运算。Python 跑，0 token。</p>
-
-  <p>只有两个地方真的要叫 AI：</p>
-
-  <p>1. 用户写下一段话 → AI 把它抽成 KG 边<br>
-     2. 匹配上的两人 → AI 写那段相遇对话</p>
-
-  <p>第一个一次性多、之后增量小。第二个只在"该叫的时候"叫。</p>
+  <p data-i18n-html="p.task">我做了一周的事情就一件：<strong>算账</strong>。</p>
 
   <hr>
 
-  <p>我之前的账算错过一次。</p>
+  <p data-i18n-html="p.conclusion">先说结论：<strong>单 DAU 月成本压到了个位数美分量级</strong>。这意味着即便规模化，推理成本也不会成为压垮这事的那根稻草。</p>
 
-  <p>最早的版本里，我跟着投资人那句"几千 DAU 就能烧穿"的直觉，把 agent 在小镇里走的每一步都算成了 LLM 调用 —— 那是动辄百万次的调用量。</p>
+  <p data-i18n="p.cheap">这数字看起来比一般 agentic social 产品低一个量级。原因不浪漫，纯粹是架构上的运气 ——</p>
 
-  <p>但故知<em>不是那种 agent</em>。镇上的小人是个确定性状态机，它不思考、不决策、不"想找谁聊"。它只是在走。它撞上谁，是物理事件，不是 AI 决定。</p>
+  <p data-i18n-html="p.noburn">故知的核心匹配，<em>不烧 token</em>。</p>
 
-  <p>撞上之后，KG 匹配也是图算法。仍然不烧 token。</p>
+  <p data-i18n="p.graph">知识图谱匹配是图算法，不是大模型。一个人 KG 子图里有几条边，另一个人 KG 子图里有几条边，两图在哪些簇上重合、强度多深，这套是确定性运算。Python 跑，0 token。</p>
 
-  <p>只有当算法说"这两个该聊"，AI 才被请出来 —— 写那段对话。</p>
+  <p data-i18n="p.twoonly">只有两个地方真的要叫 AI：</p>
 
-  <p>把账重新算一遍，单 DAU 月成本掉了一个数量级。</p>
+  <p data-i18n-html="p.twolist">1. 用户写下一段话 → AI 把它抽成 KG 边<br>2. 匹配上的两人 → AI 写那段相遇对话</p>
 
-  <hr>
-
-  <p>这周做完三件事。每一件都是为了让"算账"的结论不止是 Excel 里的承诺，而是代码里的事实。</p>
-
-  <h3 class="section-head">第一件：让不同分量的相遇走不同档的 AI</h3>
-  <p>普通的相遇用便宜的模型写对话，对它来说已经够了。高分的相遇用更贵更细腻的模型，笔触更深一点。极少数真正的灵魂时刻 —— 大约二十分之一的相遇 —— 再用最顶档的模型慢慢写。</p>
-  <p>这不是"省钱式"路由，是<em>把钱花在刀刃上</em>。便宜档省下来的钱，让顶档可以慢一点、深一点。</p>
-
-  <h3 class="section-head">第二件：把"写对话"这一步从主程序里解耦出来</h3>
-  <p>以前匹配上了就同步等 AI 写完。现在变成事件队列，主程序产出"该写"的信号，后台 worker 异步消费。</p>
-  <p>听上去是工程细节，但意味着规模化时 worker 可以独立扩。整个系统不用等同一个慢调用。</p>
-
-  <h3 class="section-head">第三件：把 prompt 写薄</h3>
-  <p>低档调用保留精简版，高档调用把两人共簇里相关的"侧面"加进来 —— 让贵的模型看到更多 evidence，写出来不只抓主线。</p>
-  <p>低档便宜、高档更细。</p>
+  <p data-i18n="p.twoexplain">第一个一次性多、之后增量小。第二个只在"该叫的时候"叫。</p>
 
   <hr>
 
-  <p>但其实我想说的不是这些技术。</p>
+  <p data-i18n="p.wrong">我之前的账算错过一次。</p>
 
-  <p>我想说的是 —— 算完这笔账之后，我有一种<em>奇怪的轻松感</em>。</p>
+  <p data-i18n="p.wrong.detail">最早的版本里，我跟着投资人那句"几千 DAU 就能烧穿"的直觉，把 agent 在小镇里走的每一步都算成了 LLM 调用 —— 那是动辄百万次的调用量。</p>
 
-  <p>不是因为数字漂亮。是因为我第一次确定：<strong>这件事不是非要烧钱才能跑</strong>。</p>
+  <p data-i18n-html="p.notthat">但故知<em>不是那种 agent</em>。镇上的小人是个确定性状态机，它不思考、不决策、不"想找谁聊"。它只是在走。它撞上谁，是物理事件，不是 AI 决定。</p>
 
-  <p>我以前以为，做这种 AI-heavy 的产品就得有融资、有团队、有一堆显卡。算完之后才发现：如果 KG 是确定性的、如果 AI 只在最关键的两个点出现、如果路由分层、如果在 100k DAU 之前不上那些贵的基础设施 ——</p>
+  <p data-i18n="p.afterbump">撞上之后，KG 匹配也是图算法。仍然不烧 token。</p>
 
-  <p>这事一个人也能扛。</p>
+  <p data-i18n="p.aionly">只有当算法说"这两个该聊"，AI 才被请出来 —— 写那段对话。</p>
 
-  <p>我不是说一定能成。我是说，至少在<em>被钱掐死</em>这条路径上，故知有可能不死。</p>
+  <p data-i18n="p.redo">把账重新算一遍，单 DAU 月成本掉了一个数量级。</p>
 
   <hr>
 
-  <p>下一封信会写什么我还不知道。可能是"waitlist 到了多少人"，可能是"第一镇圈了谁、为什么是 ta 们"。</p>
+  <p data-i18n="p.threethings">这周做完三件事。每一件都是为了让"算账"的结论不止是 Excel 里的承诺，而是代码里的事实。</p>
 
-  <p>也可能是又一次反复推翻自己之后写的。</p>
+  <h3 class="section-head" data-i18n="h.tier">第一件：让不同分量的相遇走不同档的 AI</h3>
+  <p data-i18n="p.tier1">普通的相遇用便宜的模型写对话，对它来说已经够了。高分的相遇用更贵更细腻的模型，笔触更深一点。极少数真正的灵魂时刻 —— 大约二十分之一的相遇 —— 再用最顶档的模型慢慢写。</p>
+  <p data-i18n-html="p.tier2">这不是"省钱式"路由，是<em>把钱花在刀刃上</em>。便宜档省下来的钱，让顶档可以慢一点、深一点。</p>
 
-  <p class="sig">— Z</p>
+  <h3 class="section-head" data-i18n="h.async">第二件：把"写对话"这一步从主程序里解耦出来</h3>
+  <p data-i18n="p.async1">以前匹配上了就同步等 AI 写完。现在变成事件队列，主程序产出"该写"的信号，后台 worker 异步消费。</p>
+  <p data-i18n="p.async2">听上去是工程细节，但意味着规模化时 worker 可以独立扩。整个系统不用等同一个慢调用。</p>
+
+  <h3 class="section-head" data-i18n="h.thin">第三件：把 prompt 写薄</h3>
+  <p data-i18n="p.thin1">低档调用保留精简版，高档调用把两人共簇里相关的"侧面"加进来 —— 让贵的模型看到更多 evidence，写出来不只抓主线。</p>
+  <p data-i18n="p.thin2">低档便宜、高档更细。</p>
+
+  <hr>
+
+  <p data-i18n="p.notthat2">但其实我想说的不是这些技术。</p>
+
+  <p data-i18n-html="p.relief">我想说的是 —— 算完这笔账之后，我有一种<em>奇怪的轻松感</em>。</p>
+
+  <p data-i18n-html="p.sure">不是因为数字漂亮。是因为我第一次确定：<strong>这件事不是非要烧钱才能跑</strong>。</p>
+
+  <p data-i18n="p.beforeI">我以前以为，做这种 AI-heavy 的产品就得有融资、有团队、有一堆显卡。算完之后才发现：如果 KG 是确定性的、如果 AI 只在最关键的两个点出现、如果路由分层、如果在 100k DAU 之前不上那些贵的基础设施 ——</p>
+
+  <p data-i18n="p.alone">这事一个人也能扛。</p>
+
+  <p data-i18n-html="p.notsure">我不是说一定能成。我是说，至少在<em>被钱掐死</em>这条路径上，故知有可能不死。</p>
+
+  <hr>
+
+  <p data-i18n="p.next">下一封信会写什么我还不知道。可能是"waitlist 到了多少人"，可能是"第一镇圈了谁、为什么是 ta 们"。</p>
+
+  <p data-i18n="p.maybe">也可能是又一次反复推翻自己之后写的。</p>
+
+  <p class="sig" data-i18n="sig">— Z</p>
 
   <div class="changelog">
-    <div class="label">这 周 改 了 什 么</div>
+    <div class="label" data-i18n="changelog.label">这 周 改 了 什 么</div>
     <ul>
-      <li><strong>分层路由</strong>：让不同分量的 AI 调用走不同档的模型，省下的钱花在最值得的那一档。</li>
-      <li><strong>异步化推演</strong>：把"写对话"从主程序里解耦出来。</li>
-      <li><strong>薄而准的 prompt</strong>：低档调用保持精简，高档调用看到更多 evidence。</li>
-      <li><strong>弱养成 + 场地推荐</strong>：用户可以"投喂"内容（文章/音乐/牢骚），ta 的画像会自己长；匹配成功后给一段克制的场地类型建议。</li>
+      <li data-i18n-html="changelog.item1"><strong>分层路由</strong>：让不同分量的 AI 调用走不同档的模型，省下的钱花在最值得的那一档。</li>
+      <li data-i18n-html="changelog.item2"><strong>异步化推演</strong>：把"写对话"从主程序里解耦出来。</li>
+      <li data-i18n-html="changelog.item3"><strong>薄而准的 prompt</strong>：低档调用保持精简，高档调用看到更多 evidence。</li>
+      <li data-i18n-html="changelog.item4"><strong>弱养成 + 场地推荐</strong>：用户可以"投喂"内容（文章/音乐/牢骚），ta 的画像会自己长；匹配成功后给一段克制的场地类型建议。</li>
     </ul>
-    <div class="footnote">代码改完测试都绿。具体的成本表和模型选型，给真正在认真考察这事的人单独看。</div>
+    <div class="footnote" data-i18n="changelog.footnote">代码改完测试都绿。具体的成本表和模型选型，给真正在认真考察这事的人单独看。</div>
   </div>
 
-  <p class="ps">P.S. demo 还是那个 demo。下一次有产品变化我会专门说。</p>
+  <p class="ps" data-i18n="ps">P.S. demo 还是那个 demo。下一次有产品变化我会专门说。</p>
 
   <div class="subscribe">
-    <div class="label">下 一 封</div>
-    <div class="heading">想收到<em>下一封</em>？</div>
-    <a href="../index.html#waitlist">加 入 名 单</a>
+    <div class="label" data-i18n="sub.label">下 一 封</div>
+    <div class="heading" data-i18n-html="sub.heading">想收到<em>下一封</em>？</div>
+    <a href="../index.html#waitlist" data-i18n="sub.cta">加 入 名 单</a>
   </div>
 </article>
+
+<script>
+const I18N = {
+  zh: {
+    'nav.back': '← 返回 故知',
+    'masthead': '故 知 通 讯 · 第 0 1 封',
+    'title': '算了一笔账，发现这事可能<span class="number">跑得通</span>',
+    'meta': '第 二 封 · 2 0 2 6 春',
+    'p.intro': '上一封信发出去之后，有个朋友看完跟我说：',
+    'quote': '<p>"故事我都听懂了。但你这种 agent-driven 的东西，能跑下去吗？我见过太多这类产品，几千 DAU 就把账面烧穿了。"</p>',
+    'p.stung': '那句话戳到我了。',
+    'p.task': '我做了一周的事情就一件：<strong>算账</strong>。',
+    'p.conclusion': '先说结论：<strong>单 DAU 月成本压到了个位数美分量级</strong>。这意味着即便规模化，推理成本也不会成为压垮这事的那根稻草。',
+    'p.cheap': '这数字看起来比一般 agentic social 产品低一个量级。原因不浪漫，纯粹是架构上的运气 ——',
+    'p.noburn': '故知的核心匹配，<em>不烧 token</em>。',
+    'p.graph': '知识图谱匹配是图算法，不是大模型。一个人 KG 子图里有几条边，另一个人 KG 子图里有几条边，两图在哪些簇上重合、强度多深，这套是确定性运算。Python 跑，0 token。',
+    'p.twoonly': '只有两个地方真的要叫 AI：',
+    'p.twolist': '1. 用户写下一段话 → AI 把它抽成 KG 边<br>2. 匹配上的两人 → AI 写那段相遇对话',
+    'p.twoexplain': '第一个一次性多、之后增量小。第二个只在"该叫的时候"叫。',
+    'p.wrong': '我之前的账算错过一次。',
+    'p.wrong.detail': '最早的版本里，我跟着投资人那句"几千 DAU 就能烧穿"的直觉，把 agent 在小镇里走的每一步都算成了 LLM 调用 —— 那是动辄百万次的调用量。',
+    'p.notthat': '但故知<em>不是那种 agent</em>。镇上的小人是个确定性状态机，它不思考、不决策、不"想找谁聊"。它只是在走。它撞上谁，是物理事件，不是 AI 决定。',
+    'p.afterbump': '撞上之后，KG 匹配也是图算法。仍然不烧 token。',
+    'p.aionly': '只有当算法说"这两个该聊"，AI 才被请出来 —— 写那段对话。',
+    'p.redo': '把账重新算一遍，单 DAU 月成本掉了一个数量级。',
+    'p.threethings': '这周做完三件事。每一件都是为了让"算账"的结论不止是 Excel 里的承诺，而是代码里的事实。',
+    'h.tier': '第一件：让不同分量的相遇走不同档的 AI',
+    'p.tier1': '普通的相遇用便宜的模型写对话，对它来说已经够了。高分的相遇用更贵更细腻的模型，笔触更深一点。极少数真正的灵魂时刻 —— 大约二十分之一的相遇 —— 再用最顶档的模型慢慢写。',
+    'p.tier2': '这不是"省钱式"路由，是<em>把钱花在刀刃上</em>。便宜档省下来的钱，让顶档可以慢一点、深一点。',
+    'h.async': '第二件：把"写对话"这一步从主程序里解耦出来',
+    'p.async1': '以前匹配上了就同步等 AI 写完。现在变成事件队列，主程序产出"该写"的信号，后台 worker 异步消费。',
+    'p.async2': '听上去是工程细节，但意味着规模化时 worker 可以独立扩。整个系统不用等同一个慢调用。',
+    'h.thin': '第三件：把 prompt 写薄',
+    'p.thin1': '低档调用保留精简版，高档调用把两人共簇里相关的"侧面"加进来 —— 让贵的模型看到更多 evidence，写出来不只抓主线。',
+    'p.thin2': '低档便宜、高档更细。',
+    'p.notthat2': '但其实我想说的不是这些技术。',
+    'p.relief': '我想说的是 —— 算完这笔账之后，我有一种<em>奇怪的轻松感</em>。',
+    'p.sure': '不是因为数字漂亮。是因为我第一次确定：<strong>这件事不是非要烧钱才能跑</strong>。',
+    'p.beforeI': '我以前以为，做这种 AI-heavy 的产品就得有融资、有团队、有一堆显卡。算完之后才发现：如果 KG 是确定性的、如果 AI 只在最关键的两个点出现、如果路由分层、如果在 100k DAU 之前不上那些贵的基础设施 ——',
+    'p.alone': '这事一个人也能扛。',
+    'p.notsure': '我不是说一定能成。我是说，至少在<em>被钱掐死</em>这条路径上，故知有可能不死。',
+    'p.next': '下一封信会写什么我还不知道。可能是"waitlist 到了多少人"，可能是"第一镇圈了谁、为什么是 ta 们"。',
+    'p.maybe': '也可能是又一次反复推翻自己之后写的。',
+    'sig': '— Z',
+    'changelog.label': '这 周 改 了 什 么',
+    'changelog.item1': '<strong>分层路由</strong>：让不同分量的 AI 调用走不同档的模型，省下的钱花在最值得的那一档。',
+    'changelog.item2': '<strong>异步化推演</strong>：把"写对话"从主程序里解耦出来。',
+    'changelog.item3': '<strong>薄而准的 prompt</strong>：低档调用保持精简，高档调用看到更多 evidence。',
+    'changelog.item4': '<strong>弱养成 + 场地推荐</strong>：用户可以"投喂"内容（文章/音乐/牢骚），ta 的画像会自己长；匹配成功后给一段克制的场地类型建议。',
+    'changelog.footnote': '代码改完测试都绿。具体的成本表和模型选型，给真正在认真考察这事的人单独看。',
+    'ps': 'P.S. demo 还是那个 demo。下一次有产品变化我会专门说。',
+    'sub.label': '下 一 封',
+    'sub.heading': '想收到<em>下一封</em>？',
+    'sub.cta': '加 入 名 单',
+  },
+  en: {
+    'nav.back': '← Back to Guzhi',
+    'masthead': 'G U Z H I  L E T T E R S  ·  # 0 1',
+    'title': 'I did the math — turns out this thing <span class="number">can run</span>',
+    'meta': 'T H E  S E C O N D  ·  S P R I N G  2 0 2 6',
+    'p.intro': 'After the first letter went out, a friend read it and said to me:',
+    'quote': '<p>"I get the story. But this agent-driven stuff you’re making — can it actually last? I’ve seen too many products like this burn through the budget at a few thousand DAU."</p>',
+    'p.stung': 'That stung.',
+    'p.task': 'So I spent the week doing one thing: <strong>doing the math</strong>.',
+    'p.conclusion': "Punchline first: <strong>cost per DAU per month came out to single-digit cents</strong>. Which means even at scale, inference cost won’t be the thing that breaks this.",
+    'p.cheap': 'That number looks an order of magnitude lower than typical agentic social products. Not for any romantic reason — it’s just architectural luck —',
+    'p.noburn': "Guzhi’s core matching <em>doesn’t burn tokens</em>.",
+    'p.graph': "Knowledge-graph matching is a graph algorithm, not a model. One person’s subgraph has some edges. The other person’s has some edges. Which clusters overlap, how deep — it’s deterministic computation. Python, zero tokens.",
+    'p.twoonly': 'Only two places actually call AI:',
+    'p.twolist': '1. User writes a passage → AI extracts it into KG edges<br>2. Two people who match → AI writes that encounter as dialogue',
+    'p.twoexplain': "The first is heavy once, then mostly small increments. The second only fires when it’s supposed to fire.",
+    'p.wrong': "I got the math wrong once before.",
+    'p.wrong.detail': "In the earliest version, I followed that investor’s instinct of ‘a few thousand DAU will burn through it’ and counted every step an agent takes in the town as an LLM call — that’s millions of calls.",
+    'p.notthat': "But Guzhi <em>isn’t that kind of agent</em>. The people in town are a deterministic state machine. They don’t think, don’t decide, don’t ‘want to talk to someone.’ They just walk. Who they bump into is a physical event, not an AI decision.",
+    'p.afterbump': "After they bump, the KG matching is also a graph algorithm. Still zero tokens.",
+    'p.aionly': "AI only gets called in when the algorithm says ‘these two should talk’ — to write that conversation.",
+    'p.redo': "Redo the math, and the per-DAU monthly cost dropped by an order of magnitude.",
+    'p.threethings': 'I shipped three things this week. Each one is to make the math more than an Excel promise — to make it a fact in the code.',
+    'h.tier': 'One: let different weights of encounter use different tiers of AI',
+    'p.tier1': "Ordinary encounters use a cheap model for the dialogue — that’s enough for them. Higher-scoring encounters use a pricier, more delicate model — a deeper touch. The rare soul-level moment, maybe one in twenty, gets the top-tier model, written slowly.",
+    'p.tier2': "This isn’t ‘save-money’ routing. It’s <em>putting the money where the cut matters</em>. What the cheap tier saves, the top tier gets to spend going slower and deeper.",
+    'h.async': 'Two: decouple the “write the dialogue” step from the main program',
+    'p.async1': "Before, when a match landed, the main program waited synchronously for the AI to finish. Now it’s an event queue. The main program emits a ‘should-write’ signal; a background worker consumes it asynchronously.",
+    'p.async2': "Sounds like an engineering detail. It means at scale, workers can scale independently. The whole system isn’t waiting on the same slow call.",
+    'h.thin': 'Three: keep the prompt thin',
+    'p.thin1': "Low-tier calls stay lean. High-tier calls also pull in the relevant ‘sides’ from the shared clusters — so the expensive model sees more evidence, and doesn’t just trace the main line.",
+    'p.thin2': "Low tier cheap. High tier finer.",
+    'p.notthat2': "But this isn’t really what I want to talk about.",
+    'p.relief': "What I want to talk about is — after the math, I felt a <em>strange kind of lightness</em>.",
+    'p.sure': "Not because the number is pretty. Because for the first time I’m sure: <strong>this doesn’t have to burn money to run</strong>.",
+    'p.beforeI': "I used to think building AI-heavy products meant fundraising, a team, racks of GPUs. After the math: if the KG is deterministic, if AI only shows up at the two essential points, if routing is tiered, if you don’t bring up the expensive infrastructure before you reach 100k DAU —",
+    'p.alone': "One person can carry this.",
+    'p.notsure': "I’m not saying it’ll definitely work. I’m saying that on the <em>death-by-money</em> path, Guzhi might not die.",
+    'p.next': 'I don’t know yet what the next letter will be about. Maybe "how many people the waitlist has", maybe "who got picked for the first town and why."',
+    'p.maybe': 'Or maybe one more rewrite after I’ve flipped on myself again.',
+    'sig': '— Z',
+    'changelog.label': 'W H A T  C H A N G E D  T H I S  W E E K',
+    'changelog.item1': '<strong>Tiered routing</strong>: different weights of AI call go to different model tiers; the saved budget gets spent where it matters most.',
+    'changelog.item2': '<strong>Async dialogue</strong>: writing the encounter is decoupled from the main program.',
+    'changelog.item3': '<strong>Thin, sharp prompts</strong>: low-tier calls stay lean, high-tier calls see more evidence.',
+    'changelog.item4': '<strong>Soft growth + venue hints</strong>: users can "feed" stuff (articles / music / venting), and their KG grows by itself; on a match, a restrained venue-type suggestion follows.',
+    'changelog.footnote': "Code changed, tests all green. The actual cost spreadsheet and model picks I share one-on-one with people seriously looking into this.",
+    'ps': "P.S. Demo is still the same demo. Next time there's a product-side change, I'll say so explicitly.",
+    'sub.label': 'N E X T  L E T T E R',
+    'sub.heading': 'Want the <em>next one</em>?',
+    'sub.cta': 'L E A V E  Y O U R  E M A I L',
+  },
+};
+
+let currentLang = 'zh';
+
+function applyI18n(lang) {
+  currentLang = lang;
+  const dict = I18N[lang] || I18N.zh;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const v = dict[el.getAttribute('data-i18n')];
+    if (v !== undefined) el.textContent = v;
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const v = dict[el.getAttribute('data-i18n-html')];
+    if (v !== undefined) el.innerHTML = v;
+  });
+  document.documentElement.setAttribute('lang', lang);
+  document.querySelectorAll('#lang-toggle button').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+  });
+  const back = document.querySelector('.nav-back');
+  if (back) back.setAttribute('href', `../index.html?lang=${lang}`);
+  const sub = document.querySelector('.subscribe a');
+  if (sub) sub.setAttribute('href', `../index.html?lang=${lang}#waitlist`);
+  try { localStorage.setItem('guzhi_lang', lang); } catch (e) {}
+}
+
+document.querySelectorAll('#lang-toggle button').forEach(b => {
+  b.addEventListener('click', () => applyI18n(b.getAttribute('data-lang')));
+});
+
+(function initLang() {
+  let lang = 'zh';
+  try {
+    const urlLang = new URLSearchParams(location.search).get('lang');
+    if (urlLang === 'zh' || urlLang === 'en') lang = urlLang;
+    else {
+      const saved = localStorage.getItem('guzhi_lang');
+      if (saved === 'zh' || saved === 'en') lang = saved;
+      else if (!navigator.language.startsWith('zh')) lang = 'en';
+    }
+  } catch (e) {}
+  applyI18n(lang);
+})();
+</script>
 
 </body>
 </html>
