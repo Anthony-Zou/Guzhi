@@ -644,7 +644,7 @@
     </div>
 
     <div id="events">
-      <div class="title" id="events-title">路上的事（点开看详情）</div>
+      <div class="title" id="events-title" data-i18n="events.titleGeneric">路上的事（点开看详情）</div>
       <div id="events-list"></div>
     </div>
   </div>
@@ -1197,12 +1197,14 @@ function renderCard() {
 
   // 社交参数（在 social 模式下才真正起作用，random 模式下也显示但标注"未生效"）
   const extr = me.extroversion;
-  const extrLabel = extr > 0.66 ? '外向' : extr > 0.33 ? '居中' : '内向';
-  const venueLabel = {center: '爱往广场聚', edge: '爱待在边缘', neutral: '哪儿都行'}[me.venue_pref];
+  const extrKey = extr > 0.66 ? 'card.extroverted' : extr > 0.33 ? 'card.neutral' : 'card.introverted';
+  const extrLabel = t(extrKey);
+  const venueKey = { center: 'card.venue.center', edge: 'card.venue.edge', neutral: 'card.venue.neutral' }[me.venue_pref];
+  const venueLabel = t(venueKey);
   const socialActive = currentMode === 'social';
   const socialHint = socialActive
-    ? '（会影响她怎么走）'
-    : '<span style="color:#5a5048">（基线模式下不起作用）</span>';
+    ? t('card.socialActive')
+    : `<span style="color:#5a5048">${t('card.socialInactive')}</span>`;
 
   document.getElementById('card-content').innerHTML = `
     <div class="name">
@@ -1213,14 +1215,14 @@ function renderCard() {
     <div class="meta">${extrLabel}(${extr}) · ${venueLabel} ${socialHint}</div>
     <div class="edges">${edgesHtml}</div>
     <div class="progress">
-      <div class="label">她的潜在故知</div>
+      <div class="label">${t('card.potentialLabel')}</div>
       <div><span class="num">${metCount}</span>
-        <span style="color:var(--muted)"> / ${totalPotential} 已撞上</span>
+        <span style="color:var(--muted)"> / ${totalPotential} ${t('card.metSuffix')}</span>
       </div>
       <div style="font-size:10px;color:var(--muted);margin-top:4px">
         ${totalPotential - metCount > 0
-          ? '镇上暖橙虚线圈 = 她"该遇到但还没遇到"的人'
-          : '该遇到的，她都遇到了 ✓'}
+          ? t('card.circleHint')
+          : t('card.allMet')}
       </div>
     </div>
   `;
@@ -1250,10 +1252,10 @@ function renderEvents() {
 
   list.innerHTML = visible.map(({ idx, event: e }) => {
     const cls = e.matched ? 'matched' : 'unmatched';
-    const result = e.matched ? `配上 · ${e.score.toFixed(3)}` : '没配上';
+    const result = e.matched ? `${t('event.matched')} · ${e.score.toFixed(3)}` : t('event.notMatched');
     const clusters = e.shared_clusters.length
-      ? '共簇 ' + e.shared_clusters.join(', ')
-      : '无共簇';
+      ? t('event.sharedPrefix') + ' ' + e.shared_clusters.join(', ')
+      : t('event.noShared');
     return `<div class="event ${cls}" data-idx="${idx}">
       <div class="t">tick ${e.tick}</div>
       <div class="pair">${e.a_name} × ${e.b_name}</div>
@@ -1281,9 +1283,9 @@ function renderEvents() {
   const titleEl = document.getElementById('events-title');
   if (highlightedId) {
     const me = personaById[highlightedId];
-    titleEl.textContent = `${me.name} 路上的事（点开看详情）`;
+    titleEl.textContent = t('events.titleFor', me.name);
   } else {
-    titleEl.textContent = '路上的事（点开看详情）';
+    titleEl.textContent = t('events.titleGeneric');
   }
 }
 
@@ -1338,25 +1340,25 @@ function showDetail(e) {
   }
 
   const seedBlock = e.seed ? `
-    <div class="seed-block"><b>故事种子</b>
-来自簇 ${e.seed.cluster}「${e.seed.cluster_name}」
+    <div class="seed-block"><b>${t('detail.seedLabel')}</b>
+${t('detail.fromCluster')} ${e.seed.cluster}「${e.seed.cluster_name}」
 ${a.name}：${e.seed.a_entity}
 ${b.name}：${e.seed.b_entity}
-故事感权重：${e.seed.weight}</div>` : '';
+${t('detail.seedWeight')}: ${e.seed.weight}</div>` : '';
   const narBlock = e.narration ? `
     <div class="narration">${e.narration}</div>` : '';
 
   document.getElementById('detail-content').innerHTML = `
     <h2>${a.name} × ${b.name}（tick ${e.tick}）</h2>
-    <div>契合分：<b>${e.score.toFixed(3)}</b></div>
+    <div>${t('detail.fitLabel')}: <b>${e.score.toFixed(3)}</b></div>
 
     <h3 style="font-size:12px;color:var(--muted);margin:14px 0 6px;font-weight:normal">
-      共享的语义簇（★ 标在边上）
+      ${t('detail.sharedHeader')}
     </h3>
     ${renderSharedExplanations()}
 
     <h3 style="font-size:12px;color:var(--muted);margin:14px 0 6px;font-weight:normal">
-      两人的 KG 侧脸（核心边，共簇里的高亮）
+      ${t('detail.sidesHeader')}
     </h3>
     <div style="display:flex;gap:12px">
       ${renderPersonaSide(a)}
@@ -1366,7 +1368,7 @@ ${b.name}：${e.seed.b_entity}
     ${seedBlock}
     ${narBlock}
     <div style="color:var(--muted);font-size:11px;margin-top:8px">
-      [这段对话由 StubNarrator 占位，换成 ClaudeNarrator 就是真正的推演]
+      ${t('detail.narratorHint')}
     </div>
   `;
   document.getElementById('detail-overlay').classList.add('show');
@@ -1389,12 +1391,12 @@ function renderStats() {
   const matchDelta = s.matched_meetings - other.matched_meetings;
   const deltaStr = (n) => n > 0 ? `+${n}` : `${n}`;
   document.getElementById('stats').innerHTML = `
-    <div class="s"><div class="v">${s.n_personas}</div><div class="k">人物</div></div>
-    <div class="s"><div class="v">${DATA.n_ticks}</div><div class="k">时间帧</div></div>
+    <div class="s"><div class="v">${s.n_personas}</div><div class="k">${t('stats.people')}</div></div>
+    <div class="s"><div class="v">${DATA.n_ticks}</div><div class="k">${t('stats.ticks')}</div></div>
     <div class="s"><div class="v">${s.total_meetings}</div>
-      <div class="k">相遇 <span style="color:${meetDelta>0?'#7fa68a':'#8a8178'}">(${deltaStr(meetDelta)})</span></div></div>
+      <div class="k">${t('stats.meetings')} <span style="color:${meetDelta>0?'#7fa68a':'#8a8178'}">(${deltaStr(meetDelta)})</span></div></div>
     <div class="s"><div class="v" style="color:#e0a05a">${s.matched_meetings}</div>
-      <div class="k">配上的 <span style="color:${matchDelta>0?'#7fa68a':'#8a8178'}">(${deltaStr(matchDelta)})</span></div></div>
+      <div class="k">${t('stats.matched')} <span style="color:${matchDelta>0?'#7fa68a':'#8a8178'}">(${deltaStr(matchDelta)})</span></div></div>
   `;
 }
 
@@ -1575,6 +1577,39 @@ const I18N = {
     'play.pause': '⏸ 暂停',
     'play.replay': '▶ 重播',
     'mobile.notice': '这个 demo 在 <strong>桌面</strong> 上看效果最好。手机也能将就看一眼。',
+    // stats panel
+    'stats.people': '人物',
+    'stats.ticks': '时间帧',
+    'stats.meetings': '相遇',
+    'stats.matched': '配上的',
+    // card
+    'card.extroverted': '外向',
+    'card.neutral': '居中',
+    'card.introverted': '内向',
+    'card.venue.center': '爱往广场聚',
+    'card.venue.edge': '爱待在边缘',
+    'card.venue.neutral': '哪儿都行',
+    'card.socialActive': '（会影响她怎么走）',
+    'card.socialInactive': '（基线模式下不起作用）',
+    'card.potentialLabel': '她的潜在故知',
+    'card.metSuffix': '已撞上',
+    'card.circleHint': '镇上暖橙虚线圈 = 她"该遇到但还没遇到"的人',
+    'card.allMet': '该遇到的，她都遇到了 ✓',
+    // events list
+    'event.matched': '配上',
+    'event.notMatched': '没配上',
+    'event.sharedPrefix': '共簇',
+    'event.noShared': '无共簇',
+    'events.titleFor': (name) => `${name} 路上的事（点开看详情）`,
+    'events.titleGeneric': '路上的事（点开看详情）',
+    // detail modal
+    'detail.fitLabel': '契合分',
+    'detail.sharedHeader': '共享的语义簇（★ 标在边上）',
+    'detail.sidesHeader': '两人的 KG 侧脸（核心边，共簇里的高亮）',
+    'detail.seedLabel': '故事种子',
+    'detail.fromCluster': '来自簇',
+    'detail.seedWeight': '故事感权重',
+    'detail.narratorHint': '[这段对话由 StubNarrator 占位，换成 ClaudeNarrator 就是真正的推演]',
   },
   en: {
     'nav.back': '← Back',
@@ -1604,11 +1639,46 @@ const I18N = {
     'play.pause': '⏸ Pause',
     'play.replay': '▶ Replay',
     'mobile.notice': 'This demo is meant for <strong>desktop</strong>. On mobile you can still glance at it.',
+    // stats panel
+    'stats.people': 'people',
+    'stats.ticks': 'ticks',
+    'stats.meetings': 'encounters',
+    'stats.matched': 'matched',
+    // card
+    'card.extroverted': 'extroverted',
+    'card.neutral': 'middling',
+    'card.introverted': 'introverted',
+    'card.venue.center': 'gravitates to the plaza',
+    'card.venue.edge': 'stays at the edges',
+    'card.venue.neutral': 'anywhere',
+    'card.socialActive': '(shapes how she moves)',
+    'card.socialInactive': '(inactive in baseline mode)',
+    'card.potentialLabel': 'Her potential guzhi',
+    'card.metSuffix': 'already crossed',
+    'card.circleHint': 'Amber dashed circles in town = people she should have met but hasn’t yet',
+    'card.allMet': 'She has met all of them ✓',
+    // events list
+    'event.matched': 'match',
+    'event.notMatched': 'no match',
+    'event.sharedPrefix': 'shared',
+    'event.noShared': 'no shared cluster',
+    'events.titleFor': (name) => `${name} on the way (tap to expand)`,
+    'events.titleGeneric': 'Encounters along the way (tap to expand)',
+    // detail modal
+    'detail.fitLabel': 'fit',
+    'detail.sharedHeader': 'Shared clusters (★ marked on the edges)',
+    'detail.sidesHeader': 'Their KG sides (core edges; shared-cluster ones highlighted)',
+    'detail.seedLabel': 'story seed',
+    'detail.fromCluster': 'from cluster',
+    'detail.seedWeight': 'weight',
+    'detail.narratorHint': '[StubNarrator placeholder — swap to ClaudeNarrator for the real thing]',
   },
 };
 let currentLang = 'zh';
-function t(key) {
-  return (I18N[currentLang] && I18N[currentLang][key]) || I18N.zh[key] || key;
+function t(key, ...args) {
+  const v = (I18N[currentLang] && I18N[currentLang][key]) || I18N.zh[key];
+  if (typeof v === 'function') return v(...args);
+  return v !== undefined ? v : key;
 }
 function applyI18n(lang) {
   currentLang = lang;
@@ -1619,6 +1689,9 @@ function applyI18n(lang) {
       if (!p._name_zh) p._name_zh = p.name;
       if (!p._name_en) p._name_en = p.name_en || p.name;
       p.name = (lang === 'en') ? p._name_en : p._name_zh;
+      if (!p._archetype_zh) p._archetype_zh = p.archetype;
+      if (!p._archetype_en) p._archetype_en = p.archetype_en || p.archetype;
+      p.archetype = (lang === 'en') ? p._archetype_en : p._archetype_zh;
     });
     if (d.clusters) Object.values(d.clusters).forEach(c => {
       if (!c._name_zh) c._name_zh = c.name;

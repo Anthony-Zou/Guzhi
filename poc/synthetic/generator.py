@@ -306,6 +306,8 @@ class PersonaGenerator:
         self._used_names_en: set[str] = set()
         # pid -> 对应的英文名(随 ZH 名一起生成,持久映射)
         self._en_name_by_pid: dict[str, str] = {}
+        # pid -> 英文 archetype
+        self._en_archetype_by_pid: dict[str, str] = {}
 
     def generate(self, count: int) -> list[Persona]:
         """生成指定数量的合成人物。"""
@@ -374,12 +376,16 @@ class PersonaGenerator:
         # 用独立 rng 不污染 ZH 流
         self._en_name_by_pid[pid] = self._human_name_en(self._name_en_rng, gender)
         archetype = self._archetype(chosen_clusters)
+        self._en_archetype_by_pid[pid] = self._archetype_en(chosen_clusters)
         return Persona(id=pid, name=name, edges=tuple(edges),
                        gender=gender, archetype=archetype)
 
     def name_en_for(self, pid: str) -> str:
         """返回该 pid 对应的英文名。需要先 generate() 过。"""
         return self._en_name_by_pid.get(pid, pid)
+
+    def archetype_en_for(self, pid: str) -> str:
+        return self._en_archetype_by_pid.get(pid, "")
 
     def _human_name(self, rng: random.Random, gender: str) -> str:
         """生成一个中文真人名,与性别匹配,且在一次 generate() 内不重名。
@@ -443,6 +449,23 @@ class PersonaGenerator:
         if len(ordered) == 1:
             return lib.cluster_label[ordered[0]]
         return "特质不明"
+
+    def _archetype_en(self, chosen_clusters: list[str]) -> str:
+        """同 _archetype 但用英文 cluster_label_en。"""
+        lib = self._lib
+        if not lib.cluster_label_en:
+            return ""
+        level_rank = {ClusterLevel.L3: 0, ClusterLevel.L2: 1, ClusterLevel.L1: 2}
+        ordered = sorted(
+            chosen_clusters,
+            key=lambda cid: level_rank[lib.clusters[cid].level],
+        )
+        if len(ordered) >= 2:
+            labels = [lib.cluster_label_en.get(cid, "") for cid in ordered[:2]]
+            return " · ".join(l for l in labels if l)
+        if len(ordered) == 1:
+            return lib.cluster_label_en.get(ordered[0], "")
+        return "unspecified"
 
 
 # ============================================================

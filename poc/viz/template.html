@@ -298,6 +298,17 @@ const I18N = {
     'legend.fn': '算法漏掉（FN）',
     'legend.nodeSize': '节点越大 = 涉及的语义簇越多',
     'mobile.notice': '这个 demo 在 <strong>桌面</strong> 上看效果最好。手机也能将就看一眼。',
+    'detail.archetype': '画像',
+    'detail.kgEdges': n => `知识图谱里的边（${n} 条）`,
+    'detail.noCluster': '无簇',
+    'detail.tp': '✓ 配对了（TP）',
+    'detail.fp': '⚠ 算法配错了（FP）— 真值表里不该配',
+    'detail.fitLabel': '契合分',
+    'detail.sharedClusters': '共享的语义簇',
+    'detail.signalsLabel': '信号明细',
+    'detail.seedLabel': '故事种子',
+    'detail.weight': '权重',
+    'detail.narratorHint': '[ 这颗种子交给 Claude Narrator → 生成 6-10 轮的相遇对话 ]',
   },
   en: {
     'nav.back': '← Back',
@@ -322,6 +333,17 @@ const I18N = {
     'legend.fn': 'missed by algorithm',
     'legend.nodeSize': 'Node size = number of semantic clusters',
     'mobile.notice': 'This demo is meant for <strong>desktop</strong>. On mobile you can still glance at it.',
+    'detail.archetype': 'archetype',
+    'detail.kgEdges': n => `KG edges (${n})`,
+    'detail.noCluster': 'no cluster',
+    'detail.tp': '✓ matched (TP)',
+    'detail.fp': "⚠ false positive — truth says they shouldn't match",
+    'detail.fitLabel': 'fit',
+    'detail.sharedClusters': 'shared clusters',
+    'detail.signalsLabel': 'signals',
+    'detail.seedLabel': 'story seed',
+    'detail.weight': 'weight',
+    'detail.narratorHint': '[ This seed is what the real Claude Narrator turns into a 6–10 turn encounter ]',
   },
 };
 let currentLang = 'zh';
@@ -340,6 +362,9 @@ function applyI18n(lang) {
       if (!p._name_zh) p._name_zh = p.name;
       if (!p._name_en) p._name_en = p.name_en || p.name;
       p.name = (lang === 'en') ? p._name_en : p._name_zh;
+      if (!p._archetype_zh) p._archetype_zh = p.archetype;
+      if (!p._archetype_en) p._archetype_en = p.archetype_en || p.archetype;
+      p.archetype = (lang === 'en') ? p._archetype_en : p._archetype_zh;
     });
   }
   if (DATA && DATA.clusters) {
@@ -577,7 +602,7 @@ function selectNode(n) {
   const text = document.getElementById('nav-next-text');
   next.setAttribute('href', `guzhi_town.html?follow=${n.id}&lang=${currentLang}`);
   next.classList.add('has-pick');
-  text.textContent = t('nav.next.pick', n.name);
+  text.textContent = t('nav.next.pick', n.data.name);
 }
 
 function selectLink(l) {
@@ -616,12 +641,12 @@ function renderNodeDetail(n) {
   const p = n.data;
   let h = `<div class="title">${p.name} ${genderMark(p.gender)}</div>`;
   if (p.archetype) {
-    h += `<div style="color:var(--muted);font-size:11px;margin-bottom:6px">画像 · ${p.archetype}　·　${p.id}</div>`;
+    h += `<div style="color:var(--muted);font-size:11px;margin-bottom:6px">${t('detail.archetype')} · ${p.archetype}　·　${p.id}</div>`;
   }
   h += `<div style="margin-bottom:8px">${p.clusters.map(clusterTag).join('')}</div>`;
-  h += `<div style="color:var(--muted);font-size:11px;margin-bottom:4px">知识图谱里的边（${p.edges.length} 条）</div>`;
+  h += `<div style="color:var(--muted);font-size:11px;margin-bottom:4px">${t('detail.kgEdges', p.edges.length)}</div>`;
   p.edges.forEach(e => {
-    const cl = e.cluster ? `<span style="color:${CL_COLOR[DATA.clusters[e.cluster].level]}">${e.cluster}</span>` : '<span style="color:#555">无簇</span>';
+    const cl = e.cluster ? `<span style="color:${CL_COLOR[DATA.clusters[e.cluster].level]}">${e.cluster}</span>` : `<span style="color:#555">${t('detail.noCluster')}</span>`;
     h += `<div class="edge"><span class="rel">${e.relation} · ${e.strength} · ${cl}</span><br>${e.entity}</div>`;
   });
   document.getElementById('detail').innerHTML = h;
@@ -630,23 +655,23 @@ function renderNodeDetail(n) {
 function renderLinkDetail(l) {
   const m = l.meta;
   const a = nodeById[l.source], b = nodeById[l.target];
-  let h = `<div class="title">${a.name} ↔ ${b.name}</div>`;
+  let h = `<div class="title">${a.data.name} ↔ ${b.data.name}</div>`;
   const verdict = l.kind === 'tp'
-    ? '<span style="color:var(--tp)">✓ 配对了（TP）</span>'
-    : '<span style="color:var(--fp)">⚠ 算法配错了（FP）— 真值表里不该配</span>';
-  h += `<div style="margin-bottom:8px">${verdict}　契合分 <b>${m.score.toFixed(3)}</b></div>`;
-  h += `<div style="color:var(--muted);font-size:11px">共享的语义簇</div>`;
+    ? `<span style="color:var(--tp)">${t('detail.tp')}</span>`
+    : `<span style="color:var(--fp)">${t('detail.fp')}</span>`;
+  h += `<div style="margin-bottom:8px">${verdict}　${t('detail.fitLabel')} <b>${m.score.toFixed(3)}</b></div>`;
+  h += `<div style="color:var(--muted);font-size:11px">${t('detail.sharedClusters')}</div>`;
   h += `<div style="margin-bottom:8px">${m.shared_clusters.map(clusterTag).join('')}</div>`;
-  h += `<div style="color:var(--muted);font-size:11px">信号明细</div><div style="margin-bottom:8px">`;
+  h += `<div style="color:var(--muted);font-size:11px">${t('detail.signalsLabel')}</div><div style="margin-bottom:8px">`;
   for (const [k,v] of Object.entries(m.signals)) {
     if (v > 0) h += `<div style="font-size:11px">${k}: ${v.toFixed(3)}</div>`;
   }
   h += `</div>`;
   if (m.seed) {
     const s = m.seed;
-    h += `<div class="seed"><div style="color:var(--muted);font-size:10px">故事种子 · ${s.seed_type} · 权重 ${s.weight}</div>`;
-    h += `<div style="margin-top:6px">${a.name}：「${s.a_entity}」<br>${b.name}：「${s.b_entity}」</div>`;
-    h += `<div class="placeholder" style="margin-top:8px;font-size:11px">[ 这颗种子交给 Claude Narrator → 生成 6-10 轮的相遇对话 ]</div></div>`;
+    h += `<div class="seed"><div style="color:var(--muted);font-size:10px">${t('detail.seedLabel')} · ${s.seed_type} · ${t('detail.weight')} ${s.weight}</div>`;
+    h += `<div style="margin-top:6px">${a.data.name}：「${s.a_entity}」<br>${b.data.name}：「${s.b_entity}」</div>`;
+    h += `<div class="placeholder" style="margin-top:8px;font-size:11px">${t('detail.narratorHint')}</div></div>`;
   }
   document.getElementById('detail').innerHTML = h;
 }
@@ -718,7 +743,7 @@ function buildPeopleList() {
     return `<div class="person-row" data-pid="${n.id}">
       <span class="person-dot" style="background:${personColor(p)}"></span>
       <div class="person-info">
-        <div class="person-name">${n.name}</div>
+        <div class="person-name">${p.name}</div>
         <div class="person-line">${oneLiner(p)}</div>
       </div>
       <div class="person-count">${matchCount[n.id] || 0}</div>

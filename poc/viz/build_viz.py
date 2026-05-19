@@ -52,6 +52,7 @@ def build_payload() -> dict:
             "name_en": gen.name_en_for(p.id),
             "gender": p.gender,
             "archetype": p.archetype,
+            "archetype_en": gen.archetype_en_for(p.id),
             "clusters": sorted(p.clusters_present()),
             "edges": [
                 {"relation": e.relation, "entity": e.entity,

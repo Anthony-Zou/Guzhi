@@ -348,6 +348,7 @@ def simulate(mode: str = "random") -> dict:
             "name_en": gen.name_en_for(p.id),
             "gender": p.gender,
             "archetype": p.archetype,
+            "archetype_en": gen.archetype_en_for(p.id),
             "one_liner": one_liner,
             "clusters": sorted(p.clusters_present()),
             "deepest_level": deepest,
